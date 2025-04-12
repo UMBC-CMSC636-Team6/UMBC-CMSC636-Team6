@@ -44,12 +44,15 @@ def main():
     app.layout = html.Div(
         children=[
             # Title
-            html.H1(children="TEST Analytics"),
+            #Need to figure out how to properly design this so that we can
+            #make it look nicer
+            html.H1(children="Team 6 Rent Analytics", className="header-title"),
             html.P(
                 # The text and paragraphs
                 children=(
                     "Analyze the behavior of TEST"
                 ),
+                className="header-description",
             ),
             # The map runs here we can put multiple and keep using the HTML style code to keep adding more
             dcc.Graph(figure=fig)
