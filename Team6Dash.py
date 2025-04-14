@@ -36,6 +36,10 @@ def main():
     data = requests.get("https://raw.githubusercontent.com/allisol1/UMBC-CMSC636-Team6/refs/heads/main/county_adjacency2024.txt")
     df_adj = pd.read_csv(StringIO(data.text), sep='|')
 
+    # df_h_full = pd.read_csv("./ACS_5YR_Housing_Estimate_Data_by_County_2352642343660635057.csv")
+    # df_keys = pd.read_csv("./DD_ACS_5-Year_Housing_Estimate_Data_by_County.csv")
+    # df_adj = pd.read_csv("./county_adjacency2024.txt")
+
     state_geojson_full = geopandas.read_file("ACS_5YR_Housing_Estimate_Data_by_State_1435040831713560726.geojson")
     county_geojson_full = geopandas.read_file("ACS_5YR_Housing_Estimate_Data_by_County_318069920734049109.geojson")
 
@@ -78,6 +82,7 @@ def main():
     )
 
     if __name__ == "__main__":
-        app.run(debug=True)
+        # app.run(debug=True)
+        app.run_server(debug=True)
 
 main()
