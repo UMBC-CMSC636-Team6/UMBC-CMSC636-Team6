@@ -1,4 +1,5 @@
 import json
+import os
 
 import pandas as pd
 from dash import Dash, dcc, html, Input, Output, callback
@@ -198,7 +199,8 @@ def main():
     )
 
     if __name__ == "__main__":
+        port = int(os.environ.get("PORT", 8050))
         # app.run(debug=True)
-        app.server.run(debug=True)
+        app.server.run(debug=True, port = port)
 
 main()
