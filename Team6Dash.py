@@ -100,8 +100,8 @@ def update_all_data(data, state_selections):
 
     # filters by state and updates the map
     filtered_geojson, filtered_df = filter_states(df_county, df_state, data["counties"], data["states"], state_selections)
-    fig = get_first_map(filtered_df, filtered_geojson)
-    # fig = get_first_map(df_county, data["counties"])
+    fig = get_first_map(filtered_df, filtered_geojson, 'B25058EST1')
+    # fig = get_first_map(df_county, data["counties"], 'B25058EST1')
     return fig
 
 def main():
@@ -141,7 +141,7 @@ def main():
     fig = get_first_map(dataframe, geojson, 'B25058EST1')
 
     # filtered_geojson, filtered_df = filter_states(df_county, df_state, counties, states, ["Maryland", "Maine", "Michigan"])
-    # fig = get_first_map(filtered_df, filtered_geojson)
+    # fig = get_first_map(filtered_df, filtered_geojson, 'B25058EST1')
 
     #To update background color please check the assets/style.css file
     app = Dash(__name__)
