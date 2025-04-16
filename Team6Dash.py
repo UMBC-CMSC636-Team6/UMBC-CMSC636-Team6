@@ -32,11 +32,20 @@ def get_transformation_columns(df_county, df_adj):
     #Percent of renters relative to total occupied housing units
     df_county['PCT_RENTER'] = (df_county['B25032EST13'] / df_county['B25002EST2']) * 100
     
+    #Median rent divided by median rooms per unit
+    df_county['RENT_PER_ROOM'] = (df_county['B25058EST1'] / df_county['B25021EST3'])
+    
     #Median rent in a county normalized by the average of the median rent in surrounding counties
-    df_adj2 = pd.merge(df_adj, df_county[['GEOID', 'B25058EST1']], left_on = ['Neighbor GEOID'], right_on = ['GEOID'], how = 'inner') #join median rent on neightbor geoid
+    df_adj2 = pd.merge(df_adj, df_county[['GEOID', 'B25058EST1', 'B25021EST3']], left_on = ['Neighbor GEOID'], right_on = ['GEOID'], how = 'inner') #join median rent on neightbor geoid
     avg_neighbor_med_rent = df_adj2.groupby('County GEOID')['B25058EST1'].agg('mean').rename('AVG_SURROUNDING_MED_RENT') #average the neighbor median rent on county geoid
     df_county = pd.merge(df_county, avg_neighbor_med_rent, left_on='GEOID', right_on='County GEOID') #add new column back to main dataframe
     df_county['REL_SURROUNDING_MED_RENT'] = (df_county['B25058EST1'] / df_county['AVG_SURROUNDING_MED_RENT']) * 100 #Normalize the rent of each county wth the average surrounding. Higher = overpriced compare to surroundings
+    
+    #Average median rooms per unit of surrounding counties, and average/relative surrounding rent per room
+    avg_neighbor_med_rooms = df_adj2.groupby('County GEOID')['B25021EST3'].agg('mean').rename('AVG_SURROUNDING_MED_ROOMS') #average the neighbor median rooms per unit on county geoid
+    df_county = pd.merge(df_county, avg_neighbor_med_rooms, left_on='GEOID', right_on='County GEOID') #add new column back to main dataframe
+    df_county['AVG_SURROUNDING_RENT_PER_ROOM'] = (df_county['AVG_SURROUNDING_MED_RENT'] / df_county['AVG_SURROUNDING_MED_ROOMS']) #Average surrounding median rent divided by average surrounding median rooms per unit
+    df_county['REL_SURROUNDING_MED_RENT_PER_ROOM'] = (df_county['RENT_PER_ROOM'] / df_county['AVG_SURROUNDING_RENT_PER_ROOM']) * 100 #Normalize the rent per room of each county wth the average surrounding. Higher = overpriced compare to surroundings
 
 #inputs:
 # counties: every county's geojson. id should correspond to GEOID in df_county
