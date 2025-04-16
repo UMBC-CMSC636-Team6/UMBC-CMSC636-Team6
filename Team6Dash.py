@@ -1,7 +1,8 @@
 import json
+import os
 
 import pandas as pd
-from dash import Dash, dcc, html
+from dash import Dash, dcc, html, Input, Output, callback
 import requests
 from io import StringIO
 import plotly.express as px
@@ -79,6 +80,30 @@ def filter_states(df_county, df_state, counties, states, filter_list):
     df_combined = df_county.loc[df_county['STATE'].isin(id_list)] #for now, don't show any data for states not in focus
     return (combined_geojson, df_combined)
 
+# https://dash.plotly.com/clientside-callbacks
+# Updates the map every time a new input from the dropdown is selected
+# Stored data in all_data is [df_county, df_state, counties, states]
+@callback(
+    Output("map_fig", "figure"),
+    Input("all_data", "data"),
+    Input("state_dropdown", "value")
+)
+def update_all_data(data, state_selections):
+    # Unmarshalls json data to dataframe format
+    df_county = pd.read_json(StringIO(data["df_county"]), orient="split")
+    df_state = pd.read_json(StringIO(data["df_state"]), orient="split")
+
+    # If only one state is selected, state_selections returns a string instead of a list
+    # Converts single selected state string into a one item list
+    if(type(state_selections) is not list):
+        state_selections = [state_selections]
+
+    # filters by state and updates the map
+    filtered_geojson, filtered_df = filter_states(df_county, df_state, data["counties"], data["states"], state_selections)
+    fig = get_first_map(filtered_df, filtered_geojson)
+    # fig = get_first_map(df_county, data["counties"])
+    return fig
+
 def main():
     #gets data
     data = requests.get("https://raw.githubusercontent.com/UMBC-CMSC636-Team6/UMBC-CMSC636-Team6/refs/heads/main/ACS_5YR_Housing_Estimate_Data_by_County_2352642343660635057.csv")
@@ -98,10 +123,38 @@ def main():
     # df_keys = pd.read_csv("./DD_ACS_5-Year_Housing_Estimate_Data_by_County.csv")
     # df_adj = pd.read_csv("./county_adjacency2024.txt")
     
+<<<<<<< HEAD
     df_county = df_county_full[['GEOID', 'STATE', 'STUSAB', 'STATE_NAME', 'NAME','B25002EST1', 'B25002EST2', 'B25058EST1', 'B25032EST13', 'B25021EST3']].copy()
     df_state = df_county_full[['GEOID', 'STUSAB', 'NAME','B25002EST1', 'B25002EST2', 'B25058EST1', 'B25032EST13', 'B25021EST3']].copy()
     get_transformation_columns(df_county, df_adj)
     
+=======
+    df_county = df_county_full[['GEOID', 'STATE', 'STUSAB', 'STATE_NAME', 'NAME','B25002EST1', 'B25002EST2', 'B25058EST1', 'B25032EST13']].copy()
+    df_state = df_county_full[['GEOID', 'STUSAB', 'NAME','B25002EST1', 'B25002EST2', 'B25058EST1', 'B25032EST13']].copy()
+    # get_transformation_columns(df_county, df_adj)    
+    
+    with requests.get("https://raw.githubusercontent.com/UMBC-CMSC636-Team6/UMBC-CMSC636-Team6/refs/heads/main/geojson-counties-fips.json") as response:
+        counties = json.load(StringIO(response.text))
+    with requests.get("https://raw.githubusercontent.com/UMBC-CMSC636-Team6/UMBC-CMSC636-Team6/refs/heads/main/us-states.json") as response:
+        states = json.load(StringIO(response.text))
+    
+    
+    # Gets sorted list of states from dataframe to use in dropdown
+    state_list = df_county["STATE_NAME"].tolist()
+    state_list = list(set(state_list))
+    state_list = sorted(state_list)
+
+    # Data to be stored in dash between callbacks
+    # Marshalls dataframes into json format to be stored in dash
+    data = {
+        "df_county": df_county.to_json(orient="split"),
+        "df_state": df_state.to_json(orient="split"),
+        "counties": counties,
+        "states": states
+    }
+
+    # fig.show()
+>>>>>>> 08bece2eb5ef662b00eb161953be87d07f25585a
 
     # filter_list = ['Maryland', 'Virginia']
     # geojson, dataframe = filter_states(df_county, df_state, counties, states, filter_list)
@@ -111,6 +164,10 @@ def main():
     
     #gets map
     fig = get_first_map(dataframe, geojson)
+
+    # I tried to run the following code but the map displays nothing
+    # filtered_geojson, filtered_df = filter_states(df_county, df_state, counties, states, ["Maryland", "Maine", "Michigan"])
+    # fig = get_first_map(filtered_df, filtered_geojson)
 
     #To update background color please check the assets/style.css file
     app = Dash(__name__)
@@ -126,14 +183,38 @@ def main():
             html.P(
                 # The text and paragraphs
                 children=(
-                    "Analyze the behavior of TEST"
+                    "Created by: Allison Lee, Brandon Xu, Chris DeVoe, Gregory Marinakis, and Jon Woods.\n"
                 ),
-                className="header-description", style={'color': text_color}
+                className="header-description", style={'textAlign': 'center', 'color': text_color}
+            ),
+            html.P(
+                # The text and paragraphs
+                children=(
+                    "Our goals as Team 6 was to discover the trends and similarities in the provided housing data. We aim to show search, lookup and/or browsing features while being able to compare and identify trends within our data."
+                ),
+                className="header-description", style={'textAlign': 'center', 'color': text_color}
+            ),
+            # Add dropdown to page
+            html.P("Select a state:"),
+            dcc.Dropdown(
+                id="state_dropdown",
+                options=state_list,
+                value="Maryland",
+                placeholder="Select a state",
+                multi=True
+            ),
+            # Store data between callbacks
+            dcc.Store(
+                id="all_data",
+                data=data
             ),
             # The map runs here we can put multiple and keep using the HTML style code to keep adding more
-            dcc.Graph(figure=fig),
+            dcc.Graph(
+                id = "map_fig",
+                figure=fig
+            ),
             html.P(children=(
-                    "Figure 1: This is a map"
+                    "Figure 1: The map above shows the medium rent(B25058EST1) of the states and counties within the United States."
                 ),
                 className="header-description",style={'color': text_color}),
 
@@ -141,7 +222,8 @@ def main():
     )
 
     if __name__ == "__main__":
+        port = int(os.environ.get("PORT", 8050))
         # app.run(debug=True)
-        app.server.run(debug=True)
+        app.server.run(debug=True, host='0.0.0.0', port = port)
 
 main()
