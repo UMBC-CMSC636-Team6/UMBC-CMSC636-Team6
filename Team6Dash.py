@@ -27,6 +27,11 @@ def get_first_map(county_geojson, counties):
     paper_bgcolor=background_color, geo_bgcolor = background_color)
     return fig
 
+#inputs:
+# df_county: dataframe containing data read from census data by county
+# df_adj: dataframe containing counties listing all adjacent counties
+#outputs:
+# df_county: dataframe contianing original data columns and new data columns
 def get_transformation_columns(df_county, df_adj):
     
     #Percent of renters relative to total occupied housing units
@@ -46,6 +51,7 @@ def get_transformation_columns(df_county, df_adj):
     df_county = pd.merge(df_county, avg_neighbor_med_rooms, left_on='GEOID', right_on='County GEOID') #add new column back to main dataframe
     df_county['AVG_SURROUNDING_RENT_PER_ROOM'] = (df_county['AVG_SURROUNDING_MED_RENT'] / df_county['AVG_SURROUNDING_MED_ROOMS']) #Average surrounding median rent divided by average surrounding median rooms per unit
     df_county['REL_SURROUNDING_MED_RENT_PER_ROOM'] = (df_county['RENT_PER_ROOM'] / df_county['AVG_SURROUNDING_RENT_PER_ROOM']) * 100 #Normalize the rent per room of each county wth the average surrounding. Higher = overpriced compare to surroundings
+    return df_county
 
 #inputs:
 # counties: every county's geojson. id should correspond to GEOID in df_county
@@ -64,44 +70,47 @@ def filter_states(df_county, df_state, counties, states, filter_list):
     
     #Combine the geojson data of the included counties and excluded states
     combined_geojson = {"type":"FeatureCollection"}
-    county_features = [i['properties']['STATE'] in id_list for i in counties['features']]
-    state_features = [i['id'] in id_list for i in states['features']]
+    county_features = [i for i in counties['features'] if i['properties']['STATE'] in id_list]
+    state_features = [i for i in states['features'] if i['id'] in id_list]
     combined_geojson['features'] = county_features + state_features
     
     #set the GEOID of the states = id in states geojson features
     # df_combined = pd.concat([df_state.loc[~df_state['STUSAB'].isin(id_list)], df_county.loc[df_county['STUSAB'].isin(id_list)]])
-    df_combined = df_county.loc[df_county['STUSAB'].isin(id_list)] #for now, don't show any data for states not in focus
+    df_combined = df_county.loc[df_county['STATE'].isin(id_list)] #for now, don't show any data for states not in focus
     return (combined_geojson, df_combined)
 
 def main():
     #gets data
     data = requests.get("https://raw.githubusercontent.com/UMBC-CMSC636-Team6/UMBC-CMSC636-Team6/refs/heads/main/ACS_5YR_Housing_Estimate_Data_by_County_2352642343660635057.csv")
-    df_county_full = pd.read_csv(StringIO(data.text))
+    df_county_full = pd.read_csv(StringIO(data.text), dtype={'GEOID': str, 'STATE': str, 'COUNTY': str})
     data = requests.get("https://raw.githubusercontent.com/UMBC-CMSC636-Team6/UMBC-CMSC636-Team6/refs/heads/main/ACS_5YR_Housing_Estimate_Data_by_State_-5633158829445399210.csv")
-    df_state_full = pd.read_csv(StringIO(data.text))
+    df_state_full = pd.read_csv(StringIO(data.text), dtype={'GEOID': str})
     data = requests.get("https://raw.githubusercontent.com/UMBC-CMSC636-Team6/UMBC-CMSC636-Team6/refs/heads/main/DD_ACS_5-Year_Housing_Estimate_Data_by_County.csv")
     df_keys = pd.read_csv(StringIO(data.text))
     data = requests.get("https://raw.githubusercontent.com/UMBC-CMSC636-Team6/UMBC-CMSC636-Team6/refs/heads/main/county_adjacency2024.txt")
-    df_adj = pd.read_csv(StringIO(data.text), sep='|')
+    df_adj = pd.read_csv(StringIO(data.text), sep='|', dtype={'County GEOID': str, 'Neighbor GEOID': str})
+    with requests.get("https://raw.githubusercontent.com/UMBC-CMSC636-Team6/UMBC-CMSC636-Team6/refs/heads/main/geojson-counties-fips.json") as response:
+        counties = json.load(StringIO(response.text))
+    with requests.get("https://raw.githubusercontent.com/UMBC-CMSC636-Team6/UMBC-CMSC636-Team6/refs/heads/main/us-states.json") as response:
+        states = json.load(StringIO(response.text))
 
     # df_county_full = pd.read_csv("./ACS_5YR_Housing_Estimate_Data_by_County_2352642343660635057.csv")
     # df_keys = pd.read_csv("./DD_ACS_5-Year_Housing_Estimate_Data_by_County.csv")
     # df_adj = pd.read_csv("./county_adjacency2024.txt")
     
-    df_county = df_county_full[['GEOID', 'STATE', 'STUSAB', 'STATE_NAME', 'NAME','B25002EST1', 'B25002EST2', 'B25058EST1', 'B25032EST13']].copy()
-    df_state = df_county_full[['GEOID', 'STUSAB', 'NAME','B25002EST1', 'B25002EST2', 'B25058EST1', 'B25032EST13']].copy()
+    df_county = df_county_full[['GEOID', 'STATE', 'STUSAB', 'STATE_NAME', 'NAME','B25002EST1', 'B25002EST2', 'B25058EST1', 'B25032EST13', 'B25021EST3']].copy()
+    df_state = df_county_full[['GEOID', 'STUSAB', 'NAME','B25002EST1', 'B25002EST2', 'B25058EST1', 'B25032EST13', 'B25021EST3']].copy()
     get_transformation_columns(df_county, df_adj)
     
-    
-    with requests.get("https://raw.githubusercontent.com/UMBC-CMSC636-Team6/UMBC-CMSC636-Team6/refs/heads/main/geojson-counties-fips.json") as response:
-        counties = json.load(StringIO(response.text))
-    with requests.get("https://raw.githubusercontent.com/UMBC-CMSC636-Team6/UMBC-CMSC636-Team6/refs/heads/main/us-states.json") as response:
-        states = json.load(StringIO(response.text))
-        
-    # fig.show()
 
+    # filter_list = ['Maryland', 'Virginia']
+    # geojson, dataframe = filter_states(df_county, df_state, counties, states, filter_list)
+    geojson = counties
+    dataframe = df_county
+    
+    
     #gets map
-    fig = get_first_map(df_county, counties)
+    fig = get_first_map(dataframe, geojson)
 
     #To update background color please check the assets/style.css file
     app = Dash(__name__)
