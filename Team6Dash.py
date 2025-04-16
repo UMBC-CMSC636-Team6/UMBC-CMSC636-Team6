@@ -159,9 +159,16 @@ def main():
             html.P(
                 # The text and paragraphs
                 children=(
-                    "Analyze the behavior of TEST"
+                    "Created by: Allison Lee, Brandon Xu, Chris DeVoe, Gregory Marinakis, and Jon Woods.\n"
                 ),
-                className="header-description", style={'color': text_color}
+                className="header-description", style={'textAlign': 'center', 'color': text_color}
+            ),
+            html.P(
+                # The text and paragraphs
+                children=(
+                    "Our goals as Team 6 was to discover the trends and similarities in the provided housing data. We aim to show search, lookup and/or browsing features while being able to compare and identify trends within our data."
+                ),
+                className="header-description", style={'textAlign': 'center', 'color': text_color}
             ),
             # Add dropdown to page
             html.P("Select a state:"),
@@ -183,7 +190,7 @@ def main():
                 figure=fig
             ),
             html.P(children=(
-                    "Figure 1: This is a map"
+                    "Figure 1: The map above shows the medium rent(B25058EST1) of the states and counties within the United States."
                 ),
                 className="header-description",style={'color': text_color}),
 
