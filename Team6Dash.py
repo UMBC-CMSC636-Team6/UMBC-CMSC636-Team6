@@ -66,13 +66,13 @@ def filter_states(df_county, df_state, counties, states, filter_list):
 
 def main():
     #gets data
-    data = requests.get("https://raw.githubusercontent.com/allisol1/UMBC-CMSC631-Team6/refs/heads/main/ACS_5YR_Housing_Estimate_Data_by_County_2352642343660635057.csv")
+    data = requests.get("https://raw.githubusercontent.com/UMBC-CMSC636-Team6/UMBC-CMSC636-Team6/refs/heads/main/ACS_5YR_Housing_Estimate_Data_by_County_2352642343660635057.csv")
     df_county_full = pd.read_csv(StringIO(data.text))
-    data = requests.get("https://raw.githubusercontent.com/allisol1/UMBC-CMSC631-Team6/refs/heads/main/ACS_5YR_Housing_Estimate_Data_by_State_-5633158829445399210.csv")
+    data = requests.get("https://raw.githubusercontent.com/UMBC-CMSC636-Team6/UMBC-CMSC636-Team6/refs/heads/main/ACS_5YR_Housing_Estimate_Data_by_State_-5633158829445399210.csv")
     df_state_full = pd.read_csv(StringIO(data.text))
-    data = requests.get("https://raw.githubusercontent.com/allisol1/UMBC-CMSC636-Team6/refs/heads/main/DD_ACS_5-Year_Housing_Estimate_Data_by_County.csv")
+    data = requests.get("https://raw.githubusercontent.com/UMBC-CMSC636-Team6/UMBC-CMSC636-Team6/refs/heads/main/DD_ACS_5-Year_Housing_Estimate_Data_by_County.csv")
     df_keys = pd.read_csv(StringIO(data.text))
-    data = requests.get("https://raw.githubusercontent.com/allisol1/UMBC-CMSC636-Team6/refs/heads/main/county_adjacency2024.txt")
+    data = requests.get("https://raw.githubusercontent.com/UMBC-CMSC636-Team6/UMBC-CMSC636-Team6/refs/heads/main/county_adjacency2024.txt")
     df_adj = pd.read_csv(StringIO(data.text), sep='|')
 
     # df_county_full = pd.read_csv("./ACS_5YR_Housing_Estimate_Data_by_County_2352642343660635057.csv")
@@ -84,9 +84,9 @@ def main():
     get_transformation_columns(df_county, df_adj)
     
     
-    with requests.get("https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json") as response:
+    with requests.get("https://raw.githubusercontent.com/UMBC-CMSC636-Team6/UMBC-CMSC636-Team6/refs/heads/main/geojson-counties-fips.json") as response:
         counties = json.load(StringIO(response.text))
-    with requests.get("https://raw.githubusercontent.com/PublicaMundi/MappingAPI/refs/heads/master/data/geojson/us-states.json") as response:
+    with requests.get("https://raw.githubusercontent.com/UMBC-CMSC636-Team6/UMBC-CMSC636-Team6/refs/heads/main/us-states.json") as response:
         states = json.load(StringIO(response.text))
         
     # fig.show()
