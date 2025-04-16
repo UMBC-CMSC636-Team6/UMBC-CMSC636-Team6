@@ -65,3 +65,4 @@ typing_extensions==4.12.2
 wcwidth==0.2.13
 wrapt==1.17.2
 wrapt_timeout_decorator==1.5.1
+geopandas
