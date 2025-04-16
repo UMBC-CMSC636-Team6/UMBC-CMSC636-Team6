@@ -123,38 +123,10 @@ def main():
     # df_keys = pd.read_csv("./DD_ACS_5-Year_Housing_Estimate_Data_by_County.csv")
     # df_adj = pd.read_csv("./county_adjacency2024.txt")
     
-<<<<<<< HEAD
     df_county = df_county_full[['GEOID', 'STATE', 'STUSAB', 'STATE_NAME', 'NAME','B25002EST1', 'B25002EST2', 'B25058EST1', 'B25032EST13', 'B25021EST3']].copy()
     df_state = df_county_full[['GEOID', 'STUSAB', 'NAME','B25002EST1', 'B25002EST2', 'B25058EST1', 'B25032EST13', 'B25021EST3']].copy()
     get_transformation_columns(df_county, df_adj)
     
-=======
-    df_county = df_county_full[['GEOID', 'STATE', 'STUSAB', 'STATE_NAME', 'NAME','B25002EST1', 'B25002EST2', 'B25058EST1', 'B25032EST13']].copy()
-    df_state = df_county_full[['GEOID', 'STUSAB', 'NAME','B25002EST1', 'B25002EST2', 'B25058EST1', 'B25032EST13']].copy()
-    # get_transformation_columns(df_county, df_adj)    
-    
-    with requests.get("https://raw.githubusercontent.com/UMBC-CMSC636-Team6/UMBC-CMSC636-Team6/refs/heads/main/geojson-counties-fips.json") as response:
-        counties = json.load(StringIO(response.text))
-    with requests.get("https://raw.githubusercontent.com/UMBC-CMSC636-Team6/UMBC-CMSC636-Team6/refs/heads/main/us-states.json") as response:
-        states = json.load(StringIO(response.text))
-    
-    
-    # Gets sorted list of states from dataframe to use in dropdown
-    state_list = df_county["STATE_NAME"].tolist()
-    state_list = list(set(state_list))
-    state_list = sorted(state_list)
-
-    # Data to be stored in dash between callbacks
-    # Marshalls dataframes into json format to be stored in dash
-    data = {
-        "df_county": df_county.to_json(orient="split"),
-        "df_state": df_state.to_json(orient="split"),
-        "counties": counties,
-        "states": states
-    }
-
-    # fig.show()
->>>>>>> 08bece2eb5ef662b00eb161953be87d07f25585a
 
     # filter_list = ['Maryland', 'Virginia']
     # geojson, dataframe = filter_states(df_county, df_state, counties, states, filter_list)
