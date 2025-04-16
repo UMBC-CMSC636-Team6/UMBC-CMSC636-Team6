@@ -14,13 +14,13 @@ text_color = '#FFFFFF'
 
 #Function to make a map
 #mainly to prove that we can use functions to make combining front and back end easier
-def get_first_map(county_geojson, counties):
+def get_first_map(county_geojson, counties, data_col):
     # Map from Alpha release for testing purposes
-    fig = px.choropleth(county_geojson, geojson=counties, locations='GEOID', color='B25058EST1',
+    fig = px.choropleth(county_geojson, geojson=counties, locations='GEOID', color=data_col,
                         color_continuous_scale="BuPu",
-                        range_color=(0, county_geojson['B25058EST1'].max()),
+                        range_color=(0, county_geojson[data_col].max()),
                         scope="usa",
-                        labels={'B25058EST1': 'Median Rent'},
+                        labels={data_col: 'Median Rent'},
                         hover_data={"STATE_NAME": True, "NAME": True, "B25058EST1": True, "GEOID": False}
                         )
 
@@ -124,20 +124,22 @@ def main():
     # df_adj = pd.read_csv("./county_adjacency2024.txt")
     
     df_county = df_county_full[['GEOID', 'STATE', 'STUSAB', 'STATE_NAME', 'NAME','B25002EST1', 'B25002EST2', 'B25058EST1', 'B25032EST13', 'B25021EST3']].copy()
-    df_state = df_county_full[['GEOID', 'STUSAB', 'NAME','B25002EST1', 'B25002EST2', 'B25058EST1', 'B25032EST13', 'B25021EST3']].copy()
+    df_state = df_state_full[['GEOID', 'STUSAB', 'NAME','B25002EST1', 'B25002EST2', 'B25058EST1', 'B25032EST13', 'B25021EST3']].copy()
     get_transformation_columns(df_county, df_adj)
     
+    #TODO: Should we rename the column names for viewing purposes
+    # rename_list = ['B25002EST1', 'B25002EST2', 'B25058EST1', 'B25032EST13', 'B25021EST3']
+    # renamed_cols = dict((i, df_keys[df_keys['Column Name'] == i]['Column Description'].tolist()[0]) for i in rename_list)
+    # dataframe = dataframe.rename(columns=renamed_cols)
+    # hover_data={"STATE_NAME": True, "NAME": True, "GEOID": False}
+    # for key in renamed_cols:
+    #     hover_data[renamed_cols[key]] = True
 
-    # filter_list = ['Maryland', 'Virginia']
-    # geojson, dataframe = filter_states(df_county, df_state, counties, states, filter_list)
+    #gets map
     geojson = counties
     dataframe = df_county
-    
-    
-    #gets map
-    fig = get_first_map(dataframe, geojson)
+    fig = get_first_map(dataframe, geojson, 'B25058EST1')
 
-    # I tried to run the following code but the map displays nothing
     # filtered_geojson, filtered_df = filter_states(df_county, df_state, counties, states, ["Maryland", "Maine", "Michigan"])
     # fig = get_first_map(filtered_df, filtered_geojson)
 
