@@ -135,6 +135,10 @@ def main():
     # for key in renamed_cols:
     #     hover_data[renamed_cols[key]] = True
 
+    state_list = df_county["STATE_NAME"].tolist()
+    state_list = list(set(state_list))
+    state_list = sorted(state_list)
+
     #gets map
     geojson = counties
     dataframe = df_county
@@ -146,7 +150,6 @@ def main():
     #To update background color please check the assets/style.css file
     app = Dash(__name__)
     #app.css.append_css({'external_url': 'format.css'})
-
     # The Dashboard
     app.layout = html.Div(style={'backgroundColor': background_color},
         children=[
@@ -179,8 +182,8 @@ def main():
             ),
             # Store data between callbacks
             dcc.Store(
-                id="all_data",
-                data=data
+                id="all_data"#,
+                # data=data # Causing the following error: "GET /_dash-layout HTTP/1.1" 500
             ),
             # The map runs here we can put multiple and keep using the HTML style code to keep adding more
             dcc.Graph(
