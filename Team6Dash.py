@@ -87,29 +87,29 @@ def filter_states(df_county, df_state, counties, states, filter_list):
 # https://dash.plotly.com/clientside-callbacks
 # Updates the map every time a new input from the dropdown is selected
 # Stored data in all_data is [df_county, df_state, counties, states]
-@callback(
-    Output("map_fig", "figure"),
-    Input("all_data", "data"),
-    Input("state_dropdown", "value")
-)
-def update_all_data(data, state_selections):
-    # Unmarshalls json data to dataframe format
-    df_county = pd.read_json(StringIO(data["df_county"]), orient="split")
-    df_state = pd.read_json(StringIO(data["df_state"]), orient="split")
+# @callback(
+#     Output("map_fig", "figure"),
+#     Input("all_data", "data"),
+#     Input("state_dropdown", "value")
+# )
+# def update_all_data(data, state_selections):
+#     # Unmarshalls json data to dataframe format
+#     df_county = pd.read_json(StringIO(data["df_county"]), orient="split")
+#     df_state = pd.read_json(StringIO(data["df_state"]), orient="split")
 
-    print(state_selections)
-    print("filtering")
-    # filters by state and updates the map
-    filtered_geojson, filtered_df = filter_states(df_county, df_state, data["counties"], data["states"], ["Maryland", "Maine", "Michigan"])
-    fig = get_first_map(filtered_df, filtered_geojson, 'B25058EST1')
+#     print(state_selections)
+#     print("filtering")
+#     # filters by state and updates the map
+#     filtered_geojson, filtered_df = filter_states(df_county, df_state, data["counties"], data["states"], ["Maryland", "Maine", "Michigan"])
+#     fig = get_first_map(filtered_df, filtered_geojson, 'B25058EST1')
 
-    # print("filtered of df")
-    # print(filtered_df.head(5))
-    # print("end of df")
+#     # print("filtered of df")
+#     # print(filtered_df.head(5))
+#     # print("end of df")
 
-    # print("done")
+#     # print("done")
 
-    return fig
+#     return fig
 
 def main():
     #gets data
