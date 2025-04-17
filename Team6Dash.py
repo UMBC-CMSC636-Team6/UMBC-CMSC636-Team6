@@ -78,6 +78,10 @@ def filter_states(df_county, df_state, counties, states, filter_list):
     #set the GEOID of the states = id in states geojson features
     # df_combined = pd.concat([df_state.loc[~df_state['STUSAB'].isin(id_list)], df_county.loc[df_county['STUSAB'].isin(id_list)]])
     df_combined = df_county.loc[df_county['STATE'].isin(id_list)] #for now, don't show any data for states not in focus
+
+    # print("combined df")
+    # df_combined.head(5)
+    # print("end of df")
     return (combined_geojson, df_combined)
 
 # https://dash.plotly.com/clientside-callbacks
@@ -93,15 +97,18 @@ def update_all_data(data, state_selections):
     df_county = pd.read_json(StringIO(data["df_county"]), orient="split")
     df_state = pd.read_json(StringIO(data["df_state"]), orient="split")
 
-    # If only one state is selected, state_selections returns a string instead of a list
-    # Converts single selected state string into a one item list
-    if(type(state_selections) is not list):
-        state_selections = [state_selections]
-
+    print(state_selections)
+    print("filtering")
     # filters by state and updates the map
-    filtered_geojson, filtered_df = filter_states(df_county, df_state, data["counties"], data["states"], state_selections)
+    filtered_geojson, filtered_df = filter_states(df_county, df_state, data["counties"], data["states"], ["Maryland", "Maine", "Michigan"])
     fig = get_first_map(filtered_df, filtered_geojson, 'B25058EST1')
-    # fig = get_first_map(df_county, data["counties"], 'B25058EST1')
+
+    # print("filtered of df")
+    # print(filtered_df.head(5))
+    # print("end of df")
+
+    # print("done")
+
     return fig
 
 def main():
@@ -126,6 +133,20 @@ def main():
     df_county = df_county_full[['GEOID', 'STATE', 'STUSAB', 'STATE_NAME', 'NAME','B25002EST1', 'B25002EST2', 'B25058EST1', 'B25032EST13', 'B25021EST3']].copy()
     df_state = df_state_full[['GEOID', 'STUSAB', 'NAME','B25002EST1', 'B25002EST2', 'B25058EST1', 'B25032EST13', 'B25021EST3']].copy()
     get_transformation_columns(df_county, df_adj)
+
+    # Gets sorted list of states from dataframe to use in dropdown
+    state_list = df_county["STATE_NAME"].tolist()
+    state_list = list(set(state_list))
+    state_list = sorted(state_list)
+
+    # Data to be stored in dash between callbacks
+    # Marshalls dataframes into json format to be stored in dash
+    callback_data = {
+        "df_county": df_county.to_json(orient="split"),
+        "df_state": df_state.to_json(orient="split"),
+        "counties": counties,
+        "states": states
+    }
     
     #TODO: Should we rename the column names for viewing purposes
     # rename_list = ['B25002EST1', 'B25002EST2', 'B25058EST1', 'B25032EST13', 'B25021EST3']
@@ -173,14 +194,14 @@ def main():
             dcc.Dropdown(
                 id="state_dropdown",
                 options=state_list,
-                value="Maryland",
+                value=["Maryland"],
                 placeholder="Select a state",
                 multi=True
             ),
             # Store data between callbacks
             dcc.Store(
                 id="all_data",
-                data=data
+                data=callback_data
             ),
             # The map runs here we can put multiple and keep using the HTML style code to keep adding more
             dcc.Graph(
