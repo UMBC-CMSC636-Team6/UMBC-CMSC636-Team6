@@ -173,6 +173,10 @@ body {
     width: 66%;
 }
 
+.max-width {
+    width: 100%;
+}
+
 .spacer {
     height: 15vh;
 }

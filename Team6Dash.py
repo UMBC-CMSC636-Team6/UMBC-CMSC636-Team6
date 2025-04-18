@@ -2,6 +2,7 @@ import json
 import os
 
 import pandas as pd
+from pandas.api.types import is_string_dtype, is_numeric_dtype
 from dash import Dash, dcc, html, Input, Output, callback
 import requests
 from io import StringIO
@@ -67,17 +68,25 @@ def filter_states(df_county, df_state, counties, states, filter_list):
     state_name_ids = {}
     for i in states['features']:
         state_name_ids[i['properties']['name']] = i['id']
+
     id_list = [state_name_ids[i] for i in filter_list]
     
     #Combine the geojson data of the included counties and excluded states
     combined_geojson = {"type":"FeatureCollection"}
     county_features = [i for i in counties['features'] if i['properties']['STATE'] in id_list]
-    state_features = [i for i in states['features'] if i['id'] in id_list]
+    state_features = [i for i in states['features'] if f"{int(i['id']):02d}" in id_list] # Some IDs are 1-digit only. Force it into a 2-digit format.
     combined_geojson['features'] = county_features + state_features
-    
+
     #set the GEOID of the states = id in states geojson features
     # df_combined = pd.concat([df_state.loc[~df_state['STUSAB'].isin(id_list)], df_county.loc[df_county['STUSAB'].isin(id_list)]])
-    df_combined = df_county.loc[df_county['STATE'].isin(id_list)] #for now, don't show any data for states not in focus
+    # df_combined = df_county.loc[df_county['STATE'].isin(id_list)] #for now, don't show any data for states not in focus
+    
+    print(id_list)
+    # print(df_county)
+    # print(is_string_dtype(df_county['STATE'])) # False
+    # print(is_numeric_dtype(df_county['STATE'])) # True
+    df_combined = df_county[df_county['STATE'].isin(list(map(int, id_list)))] # Conversion required for comparison.
+    # print(df_combined)
 
     # print("combined df")
     # df_combined.head(5)
@@ -87,29 +96,29 @@ def filter_states(df_county, df_state, counties, states, filter_list):
 # https://dash.plotly.com/clientside-callbacks
 # Updates the map every time a new input from the dropdown is selected
 # Stored data in all_data is [df_county, df_state, counties, states]
-# @callback(
-#     Output("map_fig", "figure"),
-#     Input("all_data", "data"),
-#     Input("state_dropdown", "value")
-# )
-# def update_all_data(data, state_selections):
-#     # Unmarshalls json data to dataframe format
-#     df_county = pd.read_json(StringIO(data["df_county"]), orient="split")
-#     df_state = pd.read_json(StringIO(data["df_state"]), orient="split")
+@callback(
+    Output("map_fig", "figure"),
+    Input("all_data", "data"),
+    Input("state_dropdown", "value")
+)
+def update_all_data(data, state_selections):
+    # Unmarshalls json data to dataframe format
+    df_county = pd.read_json(StringIO(data["df_county"]), orient="split")
+    df_state = pd.read_json(StringIO(data["df_state"]), orient="split")
 
-#     print(state_selections)
-#     print("filtering")
-#     # filters by state and updates the map
-#     filtered_geojson, filtered_df = filter_states(df_county, df_state, data["counties"], data["states"], ["Maryland", "Maine", "Michigan"])
-#     fig = get_first_map(filtered_df, filtered_geojson, 'B25058EST1')
+    print(state_selections)
+    print("filtering")
+    # filters by state and updates the map
+    filtered_geojson, filtered_df = filter_states(df_county, df_state, data["counties"], data["states"], state_selections)
+    fig = get_first_map(filtered_df, filtered_geojson, 'B25058EST1')
+    # print(fig)
+    # print("filtered of df")
+    # print(filtered_df.head(5))
+    # print("end of df")
 
-#     # print("filtered of df")
-#     # print(filtered_df.head(5))
-#     # print("end of df")
+    # print("done")
 
-#     # print("done")
-
-#     return fig
+    return fig
 
 def main():
     #gets data
@@ -161,9 +170,9 @@ def main():
     state_list = sorted(state_list)
 
     #gets map
-    geojson = counties
-    dataframe = df_county
-    fig = get_first_map(dataframe, geojson, 'B25058EST1')
+    # geojson = counties
+    # dataframe = df_county
+    # fig = get_first_map(dataframe, geojson, 'B25058EST1')
 
     # filtered_geojson, filtered_df = filter_states(df_county, df_state, counties, states, ["Maryland", "Maine", "Michigan"])
     # fig = get_first_map(filtered_df, filtered_geojson, 'B25058EST1')
@@ -233,8 +242,9 @@ def main():
                         ),
                         # The map runs here we can put multiple and keep using the HTML style code to keep adding more
                         dcc.Graph(
-                            id = "map_fig",
-                            figure=fig
+                            id="map_fig",
+                            className="max-width"#,
+                            #figure=fig
                         ),
                         html.P(
                             children=(
