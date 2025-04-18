@@ -9,8 +9,8 @@ import plotly.express as px
 import geopandas
 
 #colors
-background_color = '#000000'
-text_color = '#FFFFFF'
+background_color = "rgba(0, 0, 0, 0)"
+text_color = 'rgba(255, 255, 255, 0)'
 
 #Function to make a map
 #mainly to prove that we can use functions to make combining front and back end easier
@@ -172,53 +172,80 @@ def main():
     app = Dash(__name__)
     #app.css.append_css({'external_url': 'format.css'})
     # The Dashboard
-    app.layout = html.Div(style={'backgroundColor': background_color},
-        children=[
-            # Title
-            #Need to figure out how to properly design this so that we can
-            #make it look nicer
-            html.H1(children="Team 6 Rent Analytics\n\n", className="header-title", style={'textAlign': 'center', 'color': text_color}),
-            html.P(
-                # The text and paragraphs
-                children=(
-                    "Created by: Allison Lee, Brandon Xu, Chris DeVoe, Gregory Marinakis, and Jon Woods.\n"
-                ),
-                className="header-description", style={'textAlign': 'center', 'color': text_color}
-            ),
-            html.P(
-                # The text and paragraphs
-                children=(
-                    "Our goals as Team 6 was to discover the trends and similarities in the provided housing data. We aim to show search, lookup and/or browsing features while being able to compare and identify trends within our data."
-                ),
-                className="header-description", style={'textAlign': 'center', 'color': text_color}
-            ),
-            # Add dropdown to page
-            html.P("Select a state:"),
-            dcc.Dropdown(
-                id="state_dropdown",
-                options=state_list,
-                value=["Maryland"],
-                placeholder="Select a state",
-                multi=True
-            ),
-            # Store data between callbacks
-            dcc.Store(
-                id="all_data",
-                data=callback_data
-            ),
-            # The map runs here we can put multiple and keep using the HTML style code to keep adding more
-            dcc.Graph(
-                id = "map_fig",
-                figure=fig
-            ),
-            html.P(children=(
-                    "Figure 1: The map above shows the medium rent(B25058EST1) of the states and counties within the United States."
-                ),
-                className="header-description",style={'color': text_color}),
-
-        ]
+    app.layout = html.Div(
+        html.Div(
+            className="page-background",
+            children=[
+                html.Div(
+                    className="page-container",
+                    children=[
+                        html.Div(
+                            className="items-row",
+                            children=[
+                                html.Div(
+                                    className="text-box super-big-text half-width text-box-align-left",
+                                    children="Rent Analytics"
+                                ),
+                                html.Div(
+                                    children=[
+                                        html.Div(
+                                            className="text-align-left",
+                                            children="Team 6 Developers:"
+                                        ),
+                                        html.Div(
+                                            className="text-align-left",
+                                            children="Allison Lee, Chris DeVoe, Gregory Marinakis, Jon Woods, +1 more."
+                                        )
+                                    ]
+                                )
+                            ]
+                        ),
+                        html.Div(className="spacer"),
+                        html.Div(
+                            className="text-box-2 half-width text-align-left",
+                            children=(
+                                "Our goals as Team 6 was to discover the trends and similarities in the provided housing data. We aim to show search, lookup and/or browsing features while being able to compare and identify trends within our data."
+                            )
+                        ),
+                        # Add dropdown to page
+                        html.Div(
+                            className="text-box-1 half-width",
+                            children=[
+                                html.Div(
+                                    children=[
+                                        html.P("Select a state:"),
+                                        dcc.Dropdown(
+                                            className="black-text",
+                                            id="state_dropdown",
+                                            options=state_list,
+                                            value=["Maryland"],
+                                            placeholder="Select a state",
+                                            multi=True
+                                        )
+                                    ]
+                                )
+                            ]
+                        ),
+                        # Store data between callbacks
+                        dcc.Store(
+                            id="all_data",
+                            data=callback_data
+                        ),
+                        # The map runs here we can put multiple and keep using the HTML style code to keep adding more
+                        dcc.Graph(
+                            id = "map_fig",
+                            figure=fig
+                        ),
+                        html.P(
+                            children=(
+                                "Figure 1: The map above shows the medium rent(B25058EST1) of the states and counties within the United States."
+                            )
+                        )
+                    ]
+                )
+            ]
+        )
     )
-
     if __name__ == "__main__":
         port = int(os.environ.get("PORT", 8050))
         # app.run(debug=True)
