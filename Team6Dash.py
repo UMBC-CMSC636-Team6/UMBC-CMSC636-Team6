@@ -13,16 +13,29 @@ import geopandas
 background_color = "rgba(0, 0, 0, 0)"
 text_color = 'rgba(255, 255, 255, 0)'
 
+
+data_point_mapping = {'B25058EST1': 'Median Rent', 
+                      'RENT_PER_ROOM': 'Rent Per Room', 
+                      'AVG_SURROUNDING_MED_RENT': 'Avg Neighbor Rent', 
+                      'AVG_SURROUNDING_RENT_PER_ROOM': 'Avg Neighbor Rent Per Room', 
+                      'REL_SURROUNDING_MED_RENT': 'Relative Rent Percent', 
+                      'REL_SURROUNDING_MED_RENT_PER_ROOM': 'Relative Rent Per Room Percent', 
+                      'STUSAB': 'State', 
+                      'NAME': 'County'}
+data_point_list = [data_point_mapping[key] for key in data_point_mapping]
+
 #Function to make a map
 #mainly to prove that we can use functions to make combining front and back end easier
-def get_first_map(county_geojson, counties, data_col):
+def get_first_map(dataframe, geojson, data_col):
     # Map from Alpha release for testing purposes
-    fig = px.choropleth(county_geojson, geojson=counties, locations='GEOID', color=data_col,
+    dataframe.rename(columns=data_point_mapping)
+    data_col_renamed = data_point_mapping[data_col]
+    fig = px.choropleth(dataframe, geojson=geojson, locations='GEOID', color=data_col_renamed,
                         color_continuous_scale="BuPu",
-                        range_color=(0, county_geojson[data_col].max()),
+                        range_color=(0, dataframe[data_col_renamed].max()),
                         scope="usa",
-                        labels={data_col: 'Median Rent'},
-                        hover_data={"STATE_NAME": True, "NAME": True, "B25058EST1": True, "GEOID": False}
+                        labels={data_col_renamed: data_col_renamed},
+                        hover_data={data_point_mapping["STUSAB"]: True, data_point_mapping["NAME"]: True, data_col_renamed: True, "GEOID": False}
                         )
 
     fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0}, plot_bgcolor=background_color,
@@ -46,13 +59,13 @@ def get_transformation_columns(df_county, df_adj):
     df_adj2 = pd.merge(df_adj, df_county[['GEOID', 'B25058EST1', 'B25021EST3']], left_on = ['Neighbor GEOID'], right_on = ['GEOID'], how = 'inner') #join median rent on neightbor geoid
     avg_neighbor_med_rent = df_adj2.groupby('County GEOID')['B25058EST1'].agg('mean').rename('AVG_SURROUNDING_MED_RENT') #average the neighbor median rent on county geoid
     df_county = pd.merge(df_county, avg_neighbor_med_rent, left_on='GEOID', right_on='County GEOID') #add new column back to main dataframe
-    df_county['REL_SURROUNDING_MED_RENT'] = (df_county['B25058EST1'] / df_county['AVG_SURROUNDING_MED_RENT']) * 100 #Normalize the rent of each county wth the average surrounding. Higher = overpriced compare to surroundings
+    df_county['REL_SURROUNDING_MED_RENT'] = ((df_county['B25058EST1'] / df_county['AVG_SURROUNDING_MED_RENT']) * 100) - 100 #Normalize the rent of each county wth the average surrounding. Higher = overpriced compare to surroundings
     
     #Average median rooms per unit of surrounding counties, and average/relative surrounding rent per room
     avg_neighbor_med_rooms = df_adj2.groupby('County GEOID')['B25021EST3'].agg('mean').rename('AVG_SURROUNDING_MED_ROOMS') #average the neighbor median rooms per unit on county geoid
     df_county = pd.merge(df_county, avg_neighbor_med_rooms, left_on='GEOID', right_on='County GEOID') #add new column back to main dataframe
     df_county['AVG_SURROUNDING_RENT_PER_ROOM'] = (df_county['AVG_SURROUNDING_MED_RENT'] / df_county['AVG_SURROUNDING_MED_ROOMS']) #Average surrounding median rent divided by average surrounding median rooms per unit
-    df_county['REL_SURROUNDING_MED_RENT_PER_ROOM'] = (df_county['RENT_PER_ROOM'] / df_county['AVG_SURROUNDING_RENT_PER_ROOM']) * 100 #Normalize the rent per room of each county wth the average surrounding. Higher = overpriced compare to surroundings
+    df_county['REL_SURROUNDING_MED_RENT_PER_ROOM'] = ((df_county['RENT_PER_ROOM'] / df_county['AVG_SURROUNDING_RENT_PER_ROOM']) * 100) - 100 #Normalize the rent per room of each county wth the average surrounding. Higher = overpriced compare to surroundings
     return df_county
 
 #inputs:
@@ -157,6 +170,8 @@ def main():
     state_list = df_county["STATE_NAME"].tolist()
     state_list = list(set(state_list))
     state_list = sorted(state_list)
+    
+    
 
     # Get initial map figure to load in so the page doesnt load in a random graph for a split second
     fig = get_first_map(df_county, counties, 'B25058EST1')
@@ -217,6 +232,24 @@ def main():
                                             value=["Maryland"],
                                             placeholder="Select a state",
                                             multi=True
+                                        )
+                                    ]
+                                )
+                            ]
+                        ),
+                        html.Div(
+                            className="text-box-1 half-width",
+                            children=[
+                                html.Div(
+                                    children=[
+                                        html.P("Select a data point:"),
+                                        dcc.Dropdown(
+                                            className="black-text",
+                                            id="state_dropdown",
+                                            options=data_point_list,
+                                            value=[data_point_list[0]],
+                                            placeholder="Select a data point",
+                                            multi=False
                                         )
                                     ]
                                 )
