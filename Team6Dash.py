@@ -28,7 +28,7 @@ data_point_list = [data_point_mapping[key] for key in data_point_mapping]
 #mainly to prove that we can use functions to make combining front and back end easier
 def get_first_map(dataframe, geojson, data_col):
     # Map from Alpha release for testing purposes
-    dataframe.rename(columns=data_point_mapping)
+    dataframe = dataframe.rename(columns=data_point_mapping)
     data_col_renamed = data_point_mapping[data_col]
     fig = px.choropleth(dataframe, geojson=geojson, locations='GEOID', color=data_col_renamed,
                         color_continuous_scale="BuPu",
