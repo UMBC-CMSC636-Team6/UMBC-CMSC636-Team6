@@ -1,3 +1,7 @@
+html {
+    scroll-behavior: smooth;
+}
+
 :root {
     --state-transition-anim-time: 0.25s;
     --primary-color: rgb(20, 20, 25);
@@ -23,16 +27,42 @@ body {
     color: rgb(255, 255, 255);
     font-family: Arial, sans-serif;
     text-align: center;
-    width: 80%;
+    width: auto;
 
     padding-top: 50px;
     padding-bottom: 50px;
-    margin-left: 10%;
-    margin-right: 10%;
+    padding-left: 5vw;
+    padding-right: 5vw;
+    margin-left: 10vw;
+    margin-right: 10vw;
 }
 
 .bloom {
     background: radial-gradient(270deg, rgb(0, 255, 190) 0%, rgb(0, 90, 105) 25%, var(--primary-color) 100%);
+}
+
+.button-style1 {
+    border-color: var(--accent-color);
+    border-radius: 3pt;
+    border-style: solid;
+    background-color: var(--primary-color);
+    color: rgb(255, 255, 255);
+
+    font-family: inherit;
+    font-size: 14pt;
+    text-align: center;
+
+    filter: drop-shadow(0px, 4pt, 1pt, rgb(30, 15, 0));
+    width: 200px;
+    padding: 6pt;
+
+    transition: background-color var(--state-transition-anim-time), color var(--state-transition-anim-time);
+}
+
+.button-style1:hover {
+    background-color: var(--accent-color);
+    color: rgb(0, 0, 0);
+    transition: background-color var(--state-transition-anim-time), color var(--state-transition-anim-time);
 }
 
 .items-row {
@@ -147,16 +177,6 @@ body {
     text-align: right;
 }
 
-.text-box-align-left {
-    text-align: left;
-    margin-left: 5%;
-}
-
-.text-box-align-right {
-    text-align: right;
-    margin-right: 5%;
-}
-
 .quarter-width {
     width: 25%;
 }
@@ -177,8 +197,16 @@ body {
     width: 100%;
 }
 
+.h-line {
+    background-color: rgb(125, 125, 125);
+    width: 90%;
+    height: 1pt;
+    margin-top: 5vh;
+    margin-bottom: 5vh;
+}
+
 .spacer {
-    height: 15vh;
+    height: 10vh;
 }
 
 .black-text {

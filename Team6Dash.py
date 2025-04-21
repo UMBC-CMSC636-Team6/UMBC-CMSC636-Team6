@@ -179,7 +179,7 @@ def main():
                             className="items-row",
                             children=[
                                 html.Div(
-                                    className="text-box super-big-text half-width text-box-align-left",
+                                    className="text-box super-big-text half-width text-align-left",
                                     children="Rent Analytics"
                                 ),
                                 html.Div(
@@ -197,6 +197,13 @@ def main():
                             ]
                         ),
                         html.Div(className="spacer"),
+                        html.Button(
+                            className="button-style1",
+                            children=(
+                                "This is a button."
+                            )
+                        ),
+                        html.Div(className="h-line"),
                         html.Div(
                             className="text-box-2 half-width text-align-left",
                             children=(
