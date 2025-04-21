@@ -113,9 +113,10 @@ def filter_states(df_county, df_state, counties, states, filter_list):
 @callback(
     Output("map_fig", "figure"),
     Input("all_data", "data"),
-    Input("state_dropdown", "value")
+    Input("state_dropdown", "value"),
+    Input("data_point_dropdown", "value")
 )
-def update_all_data(data, state_selections):
+def update_all_data(data, state_selections, data_point_selection):
     # Unmarshalls json data to dataframe format
     df_county = pd.read_json(StringIO(data["df_county"]), orient="split")
     df_state = pd.read_json(StringIO(data["df_state"]), orient="split")
@@ -132,8 +133,8 @@ def main():
     df_county_full = pd.read_csv(StringIO(data.text), dtype={'GEOID': str, 'STATE': str, 'COUNTY': str})
     data = requests.get("https://raw.githubusercontent.com/UMBC-CMSC636-Team6/UMBC-CMSC636-Team6/refs/heads/main/ACS_5YR_Housing_Estimate_Data_by_State_-5633158829445399210.csv")
     df_state_full = pd.read_csv(StringIO(data.text), dtype={'GEOID': str})
-    data = requests.get("https://raw.githubusercontent.com/UMBC-CMSC636-Team6/UMBC-CMSC636-Team6/refs/heads/main/DD_ACS_5-Year_Housing_Estimate_Data_by_County.csv")
-    df_keys = pd.read_csv(StringIO(data.text))
+    # data = requests.get("https://raw.githubusercontent.com/UMBC-CMSC636-Team6/UMBC-CMSC636-Team6/refs/heads/main/DD_ACS_5-Year_Housing_Estimate_Data_by_County.csv")
+    # df_keys = pd.read_csv(StringIO(data.text))
     data = requests.get("https://raw.githubusercontent.com/UMBC-CMSC636-Team6/UMBC-CMSC636-Team6/refs/heads/main/county_adjacency2024.txt")
     df_adj = pd.read_csv(StringIO(data.text), sep='|', dtype={'County GEOID': str, 'Neighbor GEOID': str})
     with requests.get("https://raw.githubusercontent.com/UMBC-CMSC636-Team6/UMBC-CMSC636-Team6/refs/heads/main/geojson-counties-fips.json") as response:
@@ -160,16 +161,8 @@ def main():
         "df_county": df_county.to_json(orient="split"),
         "df_state": df_state.to_json(orient="split"),
         "counties": counties,
-        "states": states
+        "states": states,
     }
-    
-    #TODO: Should we rename the column names for viewing purposes
-    # rename_list = ['B25002EST1', 'B25002EST2', 'B25058EST1', 'B25032EST13', 'B25021EST3']
-    # renamed_cols = dict((i, df_keys[df_keys['Column Name'] == i]['Column Description'].tolist()[0]) for i in rename_list)
-    # dataframe = dataframe.rename(columns=renamed_cols)
-    # hover_data={"STATE_NAME": True, "NAME": True, "GEOID": False}
-    # for key in renamed_cols:
-    #     hover_data[renamed_cols[key]] = True
 
     state_list = df_county["STATE_NAME"].tolist()
     state_list = list(set(state_list))
@@ -179,9 +172,6 @@ def main():
 
     # Get initial map figure to load in so the page doesnt load in a random graph for a split second
     fig = get_first_map(df_county, counties, 'B25058EST1')
-
-    # filtered_geojson, filtered_df = filter_states(df_county, df_state, counties, states, ["Maryland", "Maine", "Michigan"])
-    # fig = get_first_map(filtered_df, filtered_geojson, 'B25058EST1')
 
     #To update background color please check the assets/style.css file
     app = Dash(__name__)
@@ -256,7 +246,7 @@ def main():
                                         html.P("Select a data point:"),
                                         dcc.Dropdown(
                                             className="black-text",
-                                            id="state_dropdown",
+                                            id="data_point_dropdown",
                                             options=data_point_list,
                                             value=[data_point_list[0]],
                                             placeholder="Select a data point",
@@ -279,7 +269,7 @@ def main():
                         ),
                         html.P(
                             children=(
-                                "Figure 1: The map above shows the medium rent(B25058EST1) of the states and counties within the United States."
+                                "Figure 1: The map above shows the selected data point of the states and counties within the United States."
                             )
                         )
                     ]
