@@ -28,14 +28,18 @@ data_point_list = [data_point_mapping[key] for key in data_point_mapping]
 #mainly to prove that we can use functions to make combining front and back end easier
 def get_first_map(dataframe, geojson, data_col):
     # Map from Alpha release for testing purposes
-    dataframe = dataframe.rename(columns=data_point_mapping)
-    data_col_renamed = data_point_mapping[data_col]
+    column_names = data_point_mapping.copy
+    column_names['STUSAB'] = 'State'
+    column_names['STATE'] = 'State Name'
+    column_names['NAME'] = 'County'
+    dataframe = dataframe.rename(columns=column_names)
+    data_col_renamed = column_names[data_col]
     fig = px.choropleth(dataframe, geojson=geojson, locations='GEOID', color=data_col_renamed,
                         color_continuous_scale="BuPu",
                         range_color=(0, dataframe[data_col_renamed].max()),
                         scope="usa",
                         labels={data_col_renamed: data_col_renamed},
-                        hover_data={data_point_mapping["STUSAB"]: True, data_point_mapping["NAME"]: True, data_col_renamed: True, "GEOID": False}
+                        hover_data={column_names["STUSAB"]: True, column_names["NAME"]: True, data_col_renamed: True, "GEOID": False}
                         )
 
     fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0}, plot_bgcolor=background_color,

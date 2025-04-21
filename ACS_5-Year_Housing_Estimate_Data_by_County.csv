@@ -1,0 +1,244 @@
+Column Name,Column Description
+OBJECTID,"In ArcGIS, a system-managed value that uniquely identifies a record or feature."
+GEOID,Geographic Identifier - fully concatenated geographic code (State FIPS and district number)
+STATE,Census 2-digit FIPS State Code
+COUNTY,Census 5-digit FIPS County Code
+NAME,Name of County
+STUSAB,State Abbreviation
+STATE_NAME,Name of State
+B25002EST1,Total: Housing units
+B25002EST2,Occupied housing units
+B25002EST2_PCT,    as a %  
+B25002EST3,Vacant
+B25002EST3_PCT,    as a %  
+B25009EST2,Owner Occupied
+B25009EST2_PCT,    as a %  
+B25009EST3,Owner Occupied 1-Person Household
+B25009EST3_PCT,    as a %  
+B25009EST4,Owner Occupied 2-Person Household
+B25009EST4_PCT,    as a %  
+B25009EST5,Owner Occupied 3-Person Household
+B25009EST5_PCT,    as a %  
+B25009EST6,Owner Occupied 4-Person Household
+B25009EST6_PCT,    as a %  
+B25009EST7,Owner Occupied 5-Person Household
+B25009EST7_PCT,    as a %  
+B25009_OWNOCC_6PLUS,Owner Occupied 6-or-more Person Household
+B25009_OWN_6PLUS_PCT,    as a %  
+B25009EST10,Renter Occupied
+B25009EST10_PCT,    as a %  
+B25009EST11,Renter Occupied 1-Person Household
+B25009EST11_PCT,    as a %  
+B25009EST12,Renter Occupied 2-Person Household
+B25009EST12_PCT,    as a %  
+B25009EST13,Renter Occupied 3-Person Household
+B25009EST13_PCT,    as a %  
+B25009EST14,Renter Occupied 4-Person Household
+B25009EST14_PCT,    as a %  
+B25009EST15,Renter Occupied 5-Person Household
+B25009EST15_PCT,    as a %  
+B25009_RENTOCC_6PLUS,Renter Occupied 6-or-more Person Household
+B25009_RENT_6PLUS_PCT,    as a %  
+B25009_TOT_1,Total 1-Person Household
+B25009_TOT_1_PCT,    as a %  
+B25009_TOT_2,Total 2-Person Household
+B25009_TOT_2_PCT,    as a %  
+B25009_TOT_3,Total 3-Person Household
+B25009_TOT_3_PCT,    as a %  
+B25009_TOT_4,Total 4-Person Household
+B25009_TOT_4_PCT,    as a %  
+B25009_TOT_5,Total 5-Person Household
+B25009_TOT_5_PCT,    as a %  
+B25009_TOT_6PLUS,Total 6-Person Household
+B25009_TOT_6PLUS_PCT,    as a %  
+B25037EST3,Median Year Structure Built for Renter Occupied Units
+B25041EST2,No bedroom
+B25041EST2_PCT,    as a %  
+B25041EST3,1 bedroom
+B25041EST3_PCT,    as a %  
+B25041EST4,2 bedrooms
+B25041EST4_PCT,    as a %  
+B25041_3PLUS_BDR,3 or more bedrooms
+B25041_3PLUS_BDR_PCT,    as a %  
+B25021EST1,Median number of rooms
+B25021EST2,Median number of rooms -- Owner occupied
+B25021EST3,Median number of rooms -- Renter occupied
+B25024EST2,1-unit detached structure
+B25024EST2_PCT,    as a %  
+B25024EST3,1-unit attached structure
+B25024EST3_PCT,    as a %  
+B25024_2TO4,2 to 4 units
+B25024_2TO4_PCT,    as a %  
+B25024_5TO19,5 to 19 units
+B25024_5TO19_PCT,    as a %  
+B25024_20PLUS,20 or more units
+B25024_20PLUS_PCT,    as a %  
+B25024_OTHER,Mobile home Boat RV van et
+B25024_OTHER_PCT,    as a %  
+B25032EST2,Owner-occupied housing units:
+B25032EST3,"1, detached"
+B25032EST3_PCT,    as a %  
+B25032EST4,"1, attached"
+B25032EST4_PCT,    as a %  
+B25032_OWN_2TO4,2 to 4 
+B25032_OWN_2TO4_PCT,    as a %  
+B25032_OWN_5TO19,5 to 19
+B25032_OWN_5TO19_PCT,    as a %  
+B25032_OWN_20PLUS,20 or more units
+B25032_OWN_20PLUS_PCT,    as a %  
+B25032_OWN_OTHER,Mobile home Boat RV van et
+B25032_OWN_OTHER_PCT,    as a %  
+B25032EST13,Renter-occupied housing units:
+B25032EST14,"1, detached"
+B25032EST14_PCT,    as a %  
+B25032EST15,"1, attached"
+B25032EST15_PCT,    as a %  
+B25032_RENT_2TO4,2 to 4 
+B25032_RENT_2TO4_PCT,    as a %  
+B25032_RENT_5TO19,5 to 19
+B25032_RENT_5TO19_PCT,    as a %  
+B25032_RENT_20PLUS,20 or more units
+B25032_RENT_20PLUS_PCT,    as a %  
+B25032_RENT_OTHER,Mobile home Boat RV van et
+B25032_RENT_OTHER_PCT,    as a %  
+B25036_OWN_2KPLUS,Owner occupied housing units Built 2000 or later
+B25036_OWN_2KPLUS_PCT,    as a %  
+B25036_OWN_80TO99,Owner occupied housing units Built 1980 to 1999
+B25036_OWN_80TO99_PCT,    as a %  
+B25036_OWN_50TO79,Owner occupied housing units Built 1950 to 1979
+B25036_OWN_50TO79_PCT,    as a %  
+B25036_OWN_49MINUS,Owner occupied housing units Built 1949 or earlier
+B25036_OWN_49MINUS_PCT,    as a %  
+B25036_RENT_2KPLUS,Renter occupied housing units Built 2000 or later
+B25036_RENT_2KPLUS_PCT,    as a %  
+B25036_RENT_80TO99,Renter occupied housing units Built 1980 to 1999
+B25036_RENT_80TO99_PCT,    as a %  
+B25036_RENT_50TO79,Renter occupied housing units Built 1950 to 1979
+B25036_RENT_50TO79_PCT,    as a %  
+B25036_RENT_49MINUS,Renter occupied housing units Built 1949 or earlier
+B25036_RENT_49MINUS_PCT,    as a %  
+B25036_RENT_80MINUS,Renter occupied housing units Built before 1980
+B25036_RENT_80MINUS_PCT,    as a %  
+B25036_TOT_2KPLUS,Housing units Built 2000 or later
+B25036_TOT_2KPLUS_PCT,    as a %  
+B25036_TOT_80TO99,Owner occupied housing units Built 1980 to 1999
+B25036_TOT_80TO99_PCT,    as a %  
+B25036_TOT_50TO79,Owner occupied housing units Built 1950 to 1979
+B25036_TOT_50TO79_PCT,    as a %  
+B25036_TOT_49MINUS,Owner occupied housing units Built 1949 or earlier
+B25036_TOT_49MINUS_PCT,    as a %  
+B25068EST2,No bedroom:
+B25068EST2_PCT,    as a %  
+B25068EST4,Less than $200
+B25068EST4_PCT,    as a %  
+B25068_0BDR_200TO499,$200 to $499
+B25068_0BDR_200TO499_PCT,    as a %  
+B25068_0BDR_500TO999,$500 to $999
+B25068_0BDR_500TO999_PCT,    as a %  
+B25068EST9,$1000 or more
+B25068EST9_PCT,    as a %  
+B25068EST10,No cash rent
+B25068EST10_PCT,    as a %  
+B25068EST11,1 bedroom:
+B25068EST11_PCT,    as a %  
+B25068EST13,Less than $200
+B25068EST13_PCT,    as a %  
+B25068_1BDR_200TO499,$200 to $499
+B25068_1BDR_200TO499_PCT,    as a %  
+B25068_1BDR_500TO999,$500 to $999
+B25068_1BDR_500TO999_PCT,    as a %  
+B25068EST18,$1000 or more
+B25068EST18_PCT,    as a %  
+B25068EST19,No cash rent
+B25068EST19_PCT,    as a %  
+B25068EST20,2 bedroom:
+B25068EST20_PCT,    as a %  
+B25068EST22,Less than $200
+B25068EST22_PCT,    as a %  
+B25068_2BDR_200TO499,$200 to $499
+B25068_2BDR_200TO499_PCT,    as a %  
+B25068_2BDR_500TO999,$500 to $999
+B25068_2BDR_500TO999_PCT,    as a %  
+B25068EST27,$1000 or more
+B25068EST27_PCT,    as a %  
+B25068EST28,No cash rent
+B25068EST28_PCT,    as a %  
+B25068EST29,3 or more bedrooms:
+B25068EST29_PCT,    as a %  
+B25068EST31,Less than $200
+B25068EST31_PCT,    as a %  
+B25068_3PLUSBDR_200TO499,$200 to $499
+B25068_3PLUSBDR_200TO499_PCT,    as a %  
+B25068_3PLUSBDR_500TO999,$500 to $999
+B25068_3PLUSBDR_500TO999_PCT,    as a %  
+B25068EST36,$1000 or more
+B25068EST36_PCT,    as a %  
+B25068EST37,No cash rent
+B25068EST37_PCT,    as a %  
+B25056_500MINUS,With cash rent less than $499
+B25056_500MINUS_PCT,    as a %  
+B25056_500TO599,$500 to $599
+B25056_500TO599_PCT,    as a %  
+B25056_600TO699,$600 to $699
+B25056_600TO699_PCT,    as a %  
+B25056_700TO799,$700 to $799
+B25056_700TO799_PCT,    as a %  
+B25056EST18,$800 to $899
+B25056EST18_PCT,    as a %  
+B25056EST19,$900 to $999
+B25056EST19_PCT,    as a %  
+B25056EST20,$1000 to $1249
+B25056EST20_PCT,    as a %  
+B25056EST21,$1250 to $1499
+B25056EST21_PCT,    as a %  
+B25056EST22,$1500 to $1999
+B25056EST22_PCT,    as a %  
+B25056EST23,$2000 or more
+B25056EST23_PCT,    as a %  
+B25056EST24,No cash rent
+B25056EST24_PCT,    as a %  
+B25058EST1,Median Contract Rent
+B25042EST3,Owner occupied housing units with No bedroom
+B25042EST3_PCT,    as a %  
+B25042EST4,Owner occupied housing units with 1 bedroom
+B25042EST4_PCT,    as a %  
+B25042EST5,Owner occupied housing units with 2 bedrooms
+B25042EST5_PCT,    as a %  
+B25042_OWN_3PLUS_BDR,Owner occupied housing units with 3 or more bedrooms
+B25042_OWN_3PLUS_BDR_PCT,    as a %  
+B25042EST10,Renter occupied housing units with No bedroom
+B25042EST10_PCT,    as a %  
+B25042EST11,Renter occupied housing units with 1 bedroom
+B25042EST11_PCT,    as a %  
+B25042EST12,Renter occupied housing units with 2 bedrooms
+B25042EST12_PCT,    as a %  
+B25042_RENT_3PLUS_BDR,Renter occupied housing units with 3 or more bedrooms
+B25042_RENT_3PLUS_BDR_PCT,    as a %  
+B25097EST1,Median value -- Owner-occupied housing units
+B25097EST2,Median value for units with a mortgage
+B25097EST3,Median value for units without a mortgage
+B25123EST3,Owner occupied With one selected condition
+B25123EST3_PCT,    as a %  
+B25123EST4,Owner occupied With two selected conditions
+B25123EST4_PCT,    as a %  
+B25123EST5,Owner occupied With three selected conditions
+B25123EST5_PCT,    as a %  
+B25123EST6,Owner occupied With four selected conditions
+B25123EST6_PCT,    as a %  
+B25123EST7,Owner occupied No selected conditions
+B25123EST7_PCT,    as a %  
+B25123EST9,Renter occupied With one selected condition
+B25123EST9_PCT,    as a %  
+B25123EST10,Renter occupied With two selected conditions
+B25123EST10_PCT,    as a %  
+B25123EST11,Renter occupied With three selected conditions
+B25123EST11_PCT,    as a %  
+B25123EST12,Renter occupied With four selected conditions
+B25123EST12_PCT,    as a %  
+B25123EST13,Renter occupied No selected conditions
+B25123EST13_PCT,    as a %  
+B251123_TOT,Total  Owner occupied and renter occupied No selected conditons
+B251123_TOT_1,Total  Owner occupied and renter occupied With one selected conditons
+B251123_TOT_2,Total  Owner occupied and renter occupied With two selected conditons
+B251123_TOT_3,Total  Owner occupied and renter occupied With three selected conditons
+B251123_TOT_4,Total  Owner occupied and renter occupied With four selected conditons
