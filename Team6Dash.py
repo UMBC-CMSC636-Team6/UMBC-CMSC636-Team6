@@ -3,7 +3,7 @@ import os
 
 import pandas as pd
 from pandas.api.types import is_string_dtype, is_numeric_dtype
-from dash import Dash, dcc, html, Input, Output, callback
+from dash import Dash, dcc, html, Input, Output, callback, State
 import requests
 from io import StringIO
 import plotly.express as px
@@ -28,10 +28,11 @@ data_point_list = [data_point_mapping[key] for key in data_point_mapping]
 #mainly to prove that we can use functions to make combining front and back end easier
 def get_first_map(dataframe, geojson, data_col):
     # Map from Alpha release for testing purposes
-    column_names = data_point_mapping.copy
+    column_names = data_point_mapping.copy()
     column_names['STUSAB'] = 'State'
     column_names['STATE'] = 'State Name'
     column_names['NAME'] = 'County'
+
     dataframe = dataframe.rename(columns=column_names)
     data_col_renamed = column_names[data_col]
     fig = px.choropleth(dataframe, geojson=geojson, locations='GEOID', color=data_col_renamed,
@@ -112,11 +113,15 @@ def filter_states(df_county, df_state, counties, states, filter_list):
 # Stored data in all_data is [df_county, df_state, counties, states]
 @callback(
     Output("map_fig", "figure"),
-    Input("all_data", "data"),
-    Input("state_dropdown", "value"),
-    Input("data_point_dropdown", "value")
+    Input('ref_button', 'n_clicks'),
+    State("all_data", "data"),
+    State("state_dropdown", "value"),
+    State("data_point_dropdown", "value")
 )
-def update_all_data(data, state_selections, data_point_selection):
+def update_all_data(n_clicks, data, state_selections, data_point_selection):
+
+    #print(n_clicks)
+
     # Unmarshalls json data to dataframe format
     df_county = pd.read_json(StringIO(data["df_county"]), orient="split")
     df_state = pd.read_json(StringIO(data["df_state"]), orient="split")
@@ -207,9 +212,11 @@ def main():
                         ),
                         html.Div(className="spacer"),
                         html.Button(
+                            id = 'ref_button',
+                            n_clicks = 0,
                             className="button-style1",
                             children=(
-                                "This is a button."
+                                "Refresh Map."
                             )
                         ),
                         html.Div(className="h-line"),
