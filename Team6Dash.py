@@ -122,13 +122,25 @@ def update_all_data(n_clicks, data, state_selections, data_point_selection):
 
     #print(n_clicks)
 
+    data_point = data_point_selection
+
+    if isinstance(data_point_selection, list):
+        data_point = data_point_selection[0]
+
+    for k, v in data_point_mapping.items():
+        if v == data_point:
+            data_point = k
+            break
+
+    print(data_point)
+
     # Unmarshalls json data to dataframe format
     df_county = pd.read_json(StringIO(data["df_county"]), orient="split")
     df_state = pd.read_json(StringIO(data["df_state"]), orient="split")
 
     # filters by state and updates the map
     filtered_geojson, filtered_df = filter_states(df_county, df_state, data["counties"], data["states"], state_selections)
-    fig = get_first_map(filtered_df, filtered_geojson, 'B25058EST1')
+    fig = get_first_map(filtered_df, filtered_geojson, data_point)
 
     return fig
 
