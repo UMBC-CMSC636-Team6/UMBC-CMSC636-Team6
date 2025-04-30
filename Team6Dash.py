@@ -173,8 +173,6 @@ def main():
     state_list = list(set(state_list))
     state_list = sorted(state_list)
     
-    
-
     # Get initial map figure to load in so the page doesnt load in a random graph for a split second
     fig = get_first_map(df_county, counties, 'B25058EST1')
 
