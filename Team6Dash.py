@@ -182,85 +182,164 @@ def main():
     # The Dashboard
     app.layout = html.Div(
         html.Div(
-            className="page-background",
+            className="page-container",
             children=[
                 html.Div(
-                    className="page-container",
+                    className="navbar-container p3",
                     children=[
                         html.Div(
-                            className="items-row",
+                            className="navbar-name emphasis-text text-align-left",
+                            children="Team 6"
+                        ),
+
+                        # html.Div(
+                        #     className="items-row",
+                        #     children=[
+                        #         html.Div(
+                        #             className="navbar-button",
+                        #             children="About"
+                        #         ),
+                        #         html.Div(
+                        #             className="navbar-button",
+                        #             children="Vis"
+                        #         )
+                        #     ]
+                        # ),
+                    ]
+                ),
+
+                html.Div(
+                    className="screen-frame background-1 p1",
+                    children=[
+
+                        html.Div(className="new-layer image-landing"),
+                        html.Div(className="new-layer image-gradient-frame"),
+
+                        html.Div(
+                            className="new-layer p2",
+                            children=[
+                                html.Div(className="spacer"),
+                                html.Div(className="spacer"),
+                                html.Div(className="spacer"),
+                                html.Div(
+                                    className="row-container justify-content-flex-end",
+                                    children=[
+                                        html.Div(
+                                            className="about-container",
+                                            children=[
+                                                html.Div(
+                                                    className="text-box big-text text-align-left",
+                                                    children=(
+                                                        "About"
+                                                    )
+                                                ),
+                                                html.Div(className="h-line-text"),
+                                                html.Div(
+                                                    className="text-box text-align-left",
+                                                    children=(
+                                                        "Our goals as Team 6 was to discover the trends and similarities in the provided housing data. We aim to show search, lookup and/or browsing features while being able to compare and identify trends within our data."
+                                                    )
+                                                ),
+                                            ]
+                                        )
+                                    ]
+                                ),
+                                html.Div(className="spacer"),
+                                
+                                html.Div(
+                                    className="emphasis-text super-big-text",
+                                    children="Rent Prices Across The United States"
+                                ),
+
+                                html.Div(
+                                    className="body-text",
+                                    children="Allison Lee, Chris DeVoe, Gregory Marinakis, Jon Woods, +1 more."
+                                )
+                            ]
+                        )
+                    ]
+                ),
+
+                html.Div(
+                    className="auto-frame page-container background-2",
+                    children=[
+                        html.Div(className="h-line-spacer"),
+                        html.Div(
+                            className="row-container",
                             children=[
                                 html.Div(
-                                    className="text-box super-big-text half-width text-align-left",
-                                    children="Rent Analytics"
+                                    className="guide-container",
+                                    children=[
+                                        html.Div(
+                                            className="text-box big-text text-align-left",
+                                            children=(
+                                                "How To Use"
+                                            )
+                                        ),
+                                        html.Div(className="h-line-text"),
+                                        html.Div(
+                                            className="text-box text-align-left",
+                                            children=(
+                                                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam vel sem ac sem vestibulum ullamcorper eu iaculis arcu. Ut metus diam, tincidunt a congue sed, elementum sed diam. Fusce ligula libero, interdum sit amet urna in, rhoncus sagittis augue. Maecenas et justo at eros ornare porttitor."
+                                            )
+                                        ),
+                                    ]
                                 ),
                                 html.Div(
+                                    className="controls-container",
                                     children=[
+                                        html.Button(
+                                            id = 'ref_button',
+                                            n_clicks = 0,
+                                            className="button-style1 half-width",
+                                            children=(
+                                                "Refresh Map."
+                                            )
+                                        ),
+                                        
+                                        # Add dropdown to page
                                         html.Div(
-                                            className="text-align-left",
-                                            children="Team 6 Developers:"
+                                            className="text-box",
+                                            children=[
+                                                html.Div(
+                                                    children=[
+                                                        html.P("Select a state:"),
+                                                        dcc.Dropdown(
+                                                            className="black-text",
+                                                            id="state_dropdown",
+                                                            options=state_list,
+                                                            value=["Maryland"],
+                                                            placeholder="Select a state",
+                                                            multi=True
+                                                        )
+                                                    ]
+                                                )
+                                            ]
                                         ),
                                         html.Div(
-                                            className="text-align-left",
-                                            children="Allison Lee, Chris DeVoe, Gregory Marinakis, Jon Woods, +1 more."
+                                            className="text-box",
+                                            children=[
+                                                html.Div(
+                                                    children=[
+                                                        html.P("Select a data point:"),
+                                                        dcc.Dropdown(
+                                                            className="black-text",
+                                                            id="data_point_dropdown",
+                                                            options=data_point_list,
+                                                            value=[data_point_list[0]],
+                                                            placeholder="Select a data point",
+                                                            multi=False
+                                                        )
+                                                    ]
+                                                )
+                                            ]
                                         )
                                     ]
                                 )
                             ]
                         ),
-                        html.Div(className="spacer"),
-                        html.Button(
-                            id = 'ref_button',
-                            n_clicks = 0,
-                            className="button-style1",
-                            children=(
-                                "Refresh Map."
-                            )
-                        ),
-                        html.Div(className="h-line"),
-                        html.Div(
-                            className="text-box-2 half-width text-align-left",
-                            children=(
-                                "Our goals as Team 6 was to discover the trends and similarities in the provided housing data. We aim to show search, lookup and/or browsing features while being able to compare and identify trends within our data."
-                            )
-                        ),
-                        # Add dropdown to page
-                        html.Div(
-                            className="text-box-1 half-width",
-                            children=[
-                                html.Div(
-                                    children=[
-                                        html.P("Select a state:"),
-                                        dcc.Dropdown(
-                                            className="black-text",
-                                            id="state_dropdown",
-                                            options=state_list,
-                                            value=["Maryland"],
-                                            placeholder="Select a state",
-                                            multi=True
-                                        )
-                                    ]
-                                )
-                            ]
-                        ),
-                        html.Div(
-                            className="text-box-1 half-width",
-                            children=[
-                                html.Div(
-                                    children=[
-                                        html.P("Select a data point:"),
-                                        dcc.Dropdown(
-                                            className="black-text",
-                                            id="data_point_dropdown",
-                                            options=data_point_list,
-                                            value=[data_point_list[0]],
-                                            placeholder="Select a data point",
-                                            multi=False
-                                        )
-                                    ]
-                                )
-                            ]
-                        ),
+                            
+
                         # Store data between callbacks
                         dcc.Store(
                             id="all_data",
@@ -276,7 +355,20 @@ def main():
                             children=(
                                 "Figure 1: The map above shows the selected data point of the states and counties within the United States."
                             )
-                        )
+                        ),
+                        html.Div(className="h-line-spacer")
+                    ]
+                ),
+
+                html.Div(
+                    className="auto-frame background-1",
+                    children=[
+                        html.Div(
+                            className="text-box",
+                            children=(
+                                "Contact: WIP"
+                            )
+                        ),
                     ]
                 )
             ]
