@@ -11,7 +11,7 @@ import geopandas
 
 #colors
 background_color = "rgba(0, 0, 0, 0)"
-text_color = 'rgba(255, 255, 255, 0)'
+text_color = 'rgba(255, 255, 255, 1)'
 
 
 data_point_mapping = {'B25058EST1': 'Median Rent', 
