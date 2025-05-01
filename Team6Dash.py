@@ -160,7 +160,7 @@ def get_bivariate_map(dataframe, geojson, data_col1, data_col2):
             type='rect',
             fillcolor=legend_colors[i],
             line=dict(
-                color='background_color',
+                color=background_color,
                 width=0.05,
             ),
             xref='paper',
