@@ -20,9 +20,7 @@ data_point_mapping = {'B25058EST1': 'Median Rent($)',
                       'AVG_SURROUNDING_MED_RENT': 'Avg Neighboring Rent($)', 
                       'AVG_SURROUNDING_RENT_PER_ROOM': 'Avg Neighboring Rent Per Room($)', 
                       'REL_SURROUNDING_MED_RENT': 'Relative Rent Percent(%)', 
-                      'REL_SURROUNDING_MED_RENT_PER_ROOM': 'Relative Rent Per Room Percent(%)', 
-                      'STUSAB': 'State', 
-                      'NAME': 'County'}
+                      'REL_SURROUNDING_MED_RENT_PER_ROOM': 'Relative Rent Per Room Percent(%)'}
 data_point_list = [data_point_mapping[key] for key in data_point_mapping]
 
 #Function to make a map
