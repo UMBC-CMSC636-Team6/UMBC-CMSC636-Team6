@@ -322,7 +322,7 @@ def main():
     with requests.get("https://raw.githubusercontent.com/UMBC-CMSC636-Team6/UMBC-CMSC636-Team6/refs/heads/main/geojson-counties-fips.json") as response:
         gpd_counties = geopandas.read_file(StringIO(response.text))
     with requests.get("https://raw.githubusercontent.com/UMBC-CMSC636-Team6/UMBC-CMSC636-Team6/refs/heads/main/us-states.json") as response:
-        gpd_states = geopandas.read_file(StringIO(response.text))
+        states = json.load(StringIO(response.text))
 
     #Use geopandas library to simplify the geometry to reduce compile time
     gpd_c = gpd_counties.copy()
