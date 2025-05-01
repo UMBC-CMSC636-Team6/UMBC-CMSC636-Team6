@@ -27,19 +27,12 @@ data_point_list = [data_point_mapping[key] for key in data_point_mapping]
 #mainly to prove that we can use functions to make combining front and back end easier
 def get_first_map(dataframe, geojson, data_col):
     # Map from Alpha release for testing purposes
-    column_names = data_point_mapping.copy()
-    column_names['STUSAB'] = 'State'
-    column_names['STATE'] = 'State Name'
-    column_names['NAME'] = 'County'
-
-    dataframe = dataframe.rename(columns=column_names)
-    data_col_renamed = column_names[data_col]
-    fig = px.choropleth(dataframe, geojson=geojson, locations='GEOID', color=data_col_renamed,
+    fig = px.choropleth(dataframe, geojson=geojson, locations='GEOID', color=data_col,
                         color_continuous_scale="BuPu",
-                        range_color=(0, dataframe[data_col_renamed].max()),
+                        range_color=(0, dataframe[data_col].max()),
                         scope="usa",
-                        labels={data_col_renamed: data_col_renamed},
-                        hover_data={column_names["STUSAB"]: True, column_names["NAME"]: True, data_col_renamed: True, "GEOID": False}
+                        labels={data_col: data_col},
+                        hover_data={"State": True, "County": True, data_col: True, "GEOID": False}
                         )
 
     fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0}, plot_bgcolor=background_color,
@@ -99,13 +92,10 @@ def get_bivariate_map(dataframe, geojson, data_col1, data_col2):
     #By default, using Jupyter runtime measurements, takes 20-25 seconds for 4 segments (twice that for non simplified map)
     
     set_color_col(dataframe, data_col1, data_col2, segments)
-    dataframe.rename(columns=data_point_mapping)
-    data_col1_renamed = data_point_mapping[data_col1]
-    data_col2_renamed = data_point_mapping[data_col2]
     fig = px.choropleth(dataframe, geojson=geojson, locations='GEOID', color='color',
                         color_discrete_map='identity',
                         scope="usa",
-                        hover_data={data_point_mapping["STUSAB"]: True, data_point_mapping["NAME"]: True, "color": False, "GEOID": False}
+                        hover_data={"State": True, "County": True, data_col1: True, data_col2: True, "color": False, "GEOID": False}
                         )
 
     fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0}, 
@@ -139,10 +129,10 @@ def get_bivariate_map(dataframe, geojson, data_col1, data_col2):
 
     # Adapt height to ratio to get squares
     width = 0.025
-    height = 0.025
+    height = 0.100
     
-    vert = 1 #0 is left, 1 is right
-    horiz = 0.13 #0 is bottom, 1 is top
+    vert = 0.95 #0 is left, 1 is right
+    horiz = 0.5 #0 is bottom, 1 is top
     # Start looping through rows and columns to calculate corners the squares
     for row in range(1, segments+1):
         for col in range(1, segments+1):
@@ -182,10 +172,10 @@ def get_bivariate_map(dataframe, geojson, data_col1, data_col2):
         x=coord[(segments**2)-1]['x1'],
         y=coord[(segments**2)-1]['y1'],
         showarrow=False,
-        text=data_col1_renamed + ' 🠒',
+        text=data_col1 + ' 🠒',
         font=dict(
             color=text_color,
-            size=9,
+            size=11,
         ),
         borderpad=0,
     )
@@ -199,10 +189,10 @@ def get_bivariate_map(dataframe, geojson, data_col1, data_col2):
         x=coord[(segments**2)-1]['x1'],
         y=coord[(segments**2)-1]['y1'],
         showarrow=False,
-        text=data_col2_renamed + ' 🠒',
+        text=data_col2 + ' 🠒',
         font=dict(
             color=text_color,
-            size=9,
+            size=11,
         ),
         textangle=270,
         borderpad=0,
@@ -226,13 +216,21 @@ def get_transformation_columns(df_county, df_adj):
     df_adj2 = pd.merge(df_adj, df_county[['GEOID', 'B25058EST1', 'B25021EST3']], left_on = ['Neighbor GEOID'], right_on = ['GEOID'], how = 'inner') #join median rent on neightbor geoid
     avg_neighbor_med_rent = df_adj2.groupby('County GEOID')['B25058EST1'].agg('mean').rename('AVG_SURROUNDING_MED_RENT') #average the neighbor median rent on county geoid
     df_county = pd.merge(df_county, avg_neighbor_med_rent, left_on='GEOID', right_on='County GEOID') #add new column back to main dataframe
-    df_county['REL_SURROUNDING_MED_RENT'] = ((df_county['B25058EST1'] / df_county['AVG_SURROUNDING_MED_RENT']) * 100) - 100 #Normalize the rent of each county wth the average surrounding. Higher = overpriced compare to surroundings
+    df_county['REL_SURROUNDING_MED_RENT'] = ((df_county['B25058EST1'] / df_county['AVG_SURROUNDING_MED_RENT']) * 100) #Normalize the rent of each county wth the average surrounding. Higher = overpriced compare to surroundings
 
     #Average median rooms per unit of surrounding counties, and average/relative surrounding rent per room
     avg_neighbor_med_rooms = df_adj2.groupby('County GEOID')['B25021EST3'].agg('mean').rename('AVG_SURROUNDING_MED_ROOMS') #average the neighbor median rooms per unit on county geoid
     df_county = pd.merge(df_county, avg_neighbor_med_rooms, left_on='GEOID', right_on='County GEOID') #add new column back to main dataframe
     df_county['AVG_SURROUNDING_RENT_PER_ROOM'] = (df_county['AVG_SURROUNDING_MED_RENT'] / df_county['AVG_SURROUNDING_MED_ROOMS']) #Average surrounding median rent divided by average surrounding median rooms per unit
-    df_county['REL_SURROUNDING_MED_RENT_PER_ROOM'] = ((df_county['RENT_PER_ROOM'] / df_county['AVG_SURROUNDING_RENT_PER_ROOM']) * 100) - 100 #Normalize the rent per room of each county wth the average surrounding. Higher = overpriced compare to surroundings
+    df_county['REL_SURROUNDING_MED_RENT_PER_ROOM'] = ((df_county['RENT_PER_ROOM'] / df_county['AVG_SURROUNDING_RENT_PER_ROOM']) * 100) #Normalize the rent per room of each county wth the average surrounding. Higher = overpriced compare to surroundings
+    
+    
+    column_names = data_point_mapping.copy()
+    column_names['STUSAB'] = 'State'
+    column_names['STATE'] = 'State Name'
+    column_names['NAME'] = 'County'
+
+    df_county = df_county.rename(columns=column_names)
     return df_county
 
 #inputs:
@@ -266,7 +264,7 @@ def filter_states(df_county, df_state, counties, states, filter_list):
     # print(df_county)
     # print(is_string_dtype(df_county['STATE'])) # False
     # print(is_numeric_dtype(df_county['STATE'])) # True
-    df_combined = df_county[df_county['STATE'].isin(list(map(int, id_list)))] # Conversion required for comparison.
+    df_combined = df_county[df_county['State Name'].isin(list(map(int, id_list)))] # Conversion required for comparison.
 
     return (combined_geojson, df_combined)
 
@@ -289,11 +287,6 @@ def update_all_data(n_clicks, data, state_selections, data_point_selection):
     if isinstance(data_point_selection, list):
         data_point = data_point_selection[0]
 
-    for k, v in data_point_mapping.items():
-        if v == data_point:
-            data_point = k
-            break
-
     print(data_point)
 
     # Unmarshalls json data to dataframe format
@@ -303,8 +296,9 @@ def update_all_data(n_clicks, data, state_selections, data_point_selection):
     # filters by state and updates the map
     filtered_geojson, filtered_df = filter_states(df_county, df_state, data["counties"], data["states"], state_selections)
     if isinstance(data_point_selection, list):
-        fig = get_bivariate_map(filtered_df, filtered_geojson, data_point_selection[0], data_point_selection[1])
-        return fig
+        if len(data_point_selection) > 1:
+            fig = get_bivariate_map(filtered_df, filtered_geojson, data_point_selection[0], data_point_selection[1])
+            return fig
     
     fig = get_first_map(filtered_df, filtered_geojson, data_point)
 
@@ -339,7 +333,7 @@ def main():
     
     df_county = df_county_full[['GEOID', 'STATE', 'STUSAB', 'STATE_NAME', 'NAME','B25002EST1', 'B25002EST2', 'B25058EST1', 'B25032EST13', 'B25021EST3']].copy()
     df_state = df_state_full[['GEOID', 'STUSAB', 'NAME','B25002EST1', 'B25002EST2', 'B25058EST1', 'B25032EST13', 'B25021EST3']].copy()
-    get_transformation_columns(df_county, df_adj)
+    df_county = get_transformation_columns(df_county, df_adj)
 
     # Gets sorted list of states from dataframe to use in dropdown
     state_list = df_county["STATE_NAME"].tolist()
@@ -360,7 +354,7 @@ def main():
     state_list = sorted(state_list)
     
     # Get initial map figure to load in so the page doesnt load in a random graph for a split second
-    fig = get_first_map(df_county, counties, 'B25058EST1')
+    fig = get_first_map(df_county, counties, data_point_list[0])
 
     #To update background color please check the assets/style.css file
     app = Dash(__name__)
