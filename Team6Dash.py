@@ -302,6 +302,10 @@ def update_all_data(n_clicks, data, state_selections, data_point_selection):
 
     # filters by state and updates the map
     filtered_geojson, filtered_df = filter_states(df_county, df_state, data["counties"], data["states"], state_selections)
+    if isinstance(data_point_selection, list):
+        fig = get_bivariate_map(filtered_df, filtered_geojson, data_point_selection[0], data_point_selection[1])
+        return fig
+    
     fig = get_first_map(filtered_df, filtered_geojson, data_point)
 
     return fig
@@ -510,7 +514,7 @@ def main():
                                                             options=data_point_list,
                                                             value=[data_point_list[0]],
                                                             placeholder="Select a data point",
-                                                            multi=False
+                                                            multi=True
                                                         )
                                                     ]
                                                 )
