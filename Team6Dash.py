@@ -2,24 +2,25 @@ import json
 import os
 
 import pandas as pd
+import numpy as np
 from pandas.api.types import is_string_dtype, is_numeric_dtype
 from dash import Dash, dcc, html, Input, Output, callback
 import requests
 from io import StringIO
 import plotly.express as px
+import plotly.graph_objects as go
 import geopandas
 
 #colors
 background_color = "rgba(0, 0, 0, 0)"
 text_color = 'rgba(255, 255, 255, 0)'
 
-
-data_point_mapping = {'B25058EST1': 'Median Rent', 
-                      'RENT_PER_ROOM': 'Rent Per Room', 
-                      'AVG_SURROUNDING_MED_RENT': 'Avg Neighbor Rent', 
-                      'AVG_SURROUNDING_RENT_PER_ROOM': 'Avg Neighbor Rent Per Room', 
-                      'REL_SURROUNDING_MED_RENT': 'Relative Rent Percent', 
-                      'REL_SURROUNDING_MED_RENT_PER_ROOM': 'Relative Rent Per Room Percent', 
+data_point_mapping = {'B25058EST1': 'Median Rent($)', 
+                      'RENT_PER_ROOM': 'Median Rent Per Room($)', 
+                      'AVG_SURROUNDING_MED_RENT': 'Avg Neighboring Rent($)', 
+                      'AVG_SURROUNDING_RENT_PER_ROOM': 'Avg Neighboring Rent Per Room($)', 
+                      'REL_SURROUNDING_MED_RENT': 'Relative Rent Percent(%)', 
+                      'REL_SURROUNDING_MED_RENT_PER_ROOM': 'Relative Rent Per Room Percent(%)', 
                       'STUSAB': 'State', 
                       'NAME': 'County'}
 data_point_list = [data_point_mapping[key] for key in data_point_mapping]
@@ -42,25 +43,189 @@ def get_first_map(dataframe, geojson, data_col):
     paper_bgcolor=background_color, geo_bgcolor = background_color)
     return fig
 
+def get_colors(xx,yy):
+    np_green = np.asarray([0,1,1/4])
+    np_orange = np.asarray([1,3/4,0])
+    np_blue = np.asarray([0,1/4,1])
+    np_pink = np.asarray([1,0,3/4])
+    side_norm = np.linalg.norm(np_green - np_blue)
+    u = (np_green - np_orange) / side_norm
+    v = (np_green - np_blue) / side_norm
+    w = np.cross(u, v)
+    uvw = np.array([u,v,w]).T
+    # print(u)
+    print(type(uvw))
+    colors = []
+    for i in zip(xx.items(),yy.items()):
+        x = i[0][1]
+        y = i[1][1]
+        pick_color = []
+        if np.isnan(x) or np.isnan(y):
+            pick_color = [255,255,255]
+        else:
+            pick_color = (((np.dot(uvw, np.atleast_2d(np.hstack(np.asarray([x,y,0]))).T) * side_norm * -1) + np.atleast_2d(np_green).T).T * 255).round().astype(int).tolist()[0]
+        colors.append('#%02x%02x%02x' % tuple(pick_color))
+    return colors
+
+
+
+def set_color_col(dataframe, data_col1, data_col2, segments):
+    maximum = dataframe[data_col1].max()
+    minimum = dataframe[data_col1].min()
+    yy = ((dataframe[data_col1] - minimum) / (maximum - minimum))
+    if segments >= 2:
+        segments = np.round(segments)
+        yy = np.trunc(yy*(segments-0.01))/(segments-1)
+    xx = yy * 0
+    if data_col2 is not None:
+        maximum = dataframe[data_col2].max()
+        minimum = dataframe[data_col2].min()
+        xx = (dataframe[data_col2] - minimum) / (maximum - minimum)
+        if segments >= 2:
+            xx = np.trunc(xx*(segments-0.01))/(segments-1)
+    dataframe['color'] = get_colors(xx,yy)
+    
+#Function to make a bivariate map
+#inputs:
+# dataframe: dataframe containing processed data from county
+# geojson: list containing geometry data for counties
+# data_col1: 
+#outputs:
+# fig
+def get_bivariate_map(dataframe, geojson, data_col1, data_col2):
+    segments = 4 #number of colors per axis. Increasing this significantlly increases map generation time
+    #By default, using Jupyter runtime measurements, takes 20-25 seconds for 4 segments (twice that for non simplified map)
+    
+    set_color_col(dataframe, data_col1, data_col2, segments)
+    dataframe.rename(columns=data_point_mapping)
+    data_col1_renamed = data_point_mapping[data_col1]
+    data_col2_renamed = data_point_mapping[data_col2]
+    fig = px.choropleth(dataframe, geojson=geojson, locations='GEOID', color='color',
+                        color_discrete_map='identity',
+                        scope="usa",
+                        hover_data={data_point_mapping["STUSAB"]: True, data_point_mapping["NAME"]: True, "color": False, "GEOID": False}
+                        )
+
+    fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0}, 
+                      plot_bgcolor=background_color,
+                      paper_bgcolor=background_color, 
+                      geo_bgcolor = background_color,
+                      coloraxis_showscale=False,
+                      showlegend=False)
+    
+    xxx = []
+    yyy = []
+    for i in range(segments):
+        for j in range(segments):
+            xxx.append((i/segments) + 0.01)
+            yyy.append((j/segments) + 0.01)
+    xxx = np.trunc(pd.Series(xxx)*(segments-0.01))/(segments-1)
+    yyy = np.trunc(pd.Series(yyy)*(segments-0.01))/(segments-1)
+    
+    #Full range of legend colors
+    legend = get_colors(xxx,yyy)
+    
+    #Everything below this line is for adding the bivariate color legend. 
+    #Originally written by Jan Kühn (https://www.kaggle.com/code/yotkadata/bivariate-choropleth-map-using-plotly)
+    
+    # Reverse the order of colors
+    legend_colors = legend[:]
+    legend_colors.reverse()
+
+    # Calculate coordinates for all nine rectangles
+    coord = []
+
+    # Adapt height to ratio to get squares
+    width = 0.025
+    height = 0.025
+    
+    vert = 1 #0 is left, 1 is right
+    horiz = 0.13 #0 is bottom, 1 is top
+    # Start looping through rows and columns to calculate corners the squares
+    for row in range(1, segments+1):
+        for col in range(1, segments+1):
+            coord.append({
+                'x0': round(vert-(col-1)*width, 4),
+                'y0': round(horiz-(row-1)*height, 4),
+                'x1': round(vert-col*width, 4),
+                'y1': round(horiz-row*height, 4)
+            })
+
+    # Create shapes (rectangles)
+    for i, value in enumerate(coord):
+        # Add rectangle
+        fig.add_shape(go.layout.Shape(
+            type='rect',
+            fillcolor=legend_colors[i],
+            line=dict(
+                color='#000000',
+                width=0.05,
+            ),
+            xref='paper',
+            yref='paper',
+            xanchor='right',
+            yanchor='top',
+            x0=coord[i]['x0'],
+            y0=coord[i]['y0'],
+            x1=coord[i]['x1'],
+            y1=coord[i]['y1'],
+        ))
+    
+    # Add text for first variable
+    fig.add_annotation(
+        xref='paper',
+        yref='paper',
+        xanchor='left',
+        yanchor='top',
+        x=coord[(segments**2)-1]['x1'],
+        y=coord[(segments**2)-1]['y1'],
+        showarrow=False,
+        text='Column 2 🠒',
+        font=dict(
+            color='#333',
+            size=9,
+        ),
+        borderpad=0,
+    )
+    
+    # Add text for second variable
+    fig.add_annotation(
+        xref='paper',
+        yref='paper',
+        xanchor='right',
+        yanchor='bottom',
+        x=coord[(segments**2)-1]['x1'],
+        y=coord[(segments**2)-1]['y1'],
+        showarrow=False,
+        text='Columm 1 🠒',
+        font=dict(
+            color='#333',
+            size=9,
+        ),
+        textangle=270,
+        borderpad=0,
+    )
+    
+    return fig
+
 #inputs:
 # df_county: dataframe containing data read from census data by county
 # df_adj: dataframe containing counties listing all adjacent counties
 #outputs:
 # df_county: dataframe contianing original data columns and new data columns
 def get_transformation_columns(df_county, df_adj):
-    
     #Percent of renters relative to total occupied housing units
     df_county['PCT_RENTER'] = (df_county['B25032EST13'] / df_county['B25002EST2']) * 100
-    
+
     #Median rent divided by median rooms per unit
     df_county['RENT_PER_ROOM'] = (df_county['B25058EST1'] / df_county['B25021EST3'])
-    
+
     #Median rent in a county normalized by the average of the median rent in surrounding counties
     df_adj2 = pd.merge(df_adj, df_county[['GEOID', 'B25058EST1', 'B25021EST3']], left_on = ['Neighbor GEOID'], right_on = ['GEOID'], how = 'inner') #join median rent on neightbor geoid
     avg_neighbor_med_rent = df_adj2.groupby('County GEOID')['B25058EST1'].agg('mean').rename('AVG_SURROUNDING_MED_RENT') #average the neighbor median rent on county geoid
     df_county = pd.merge(df_county, avg_neighbor_med_rent, left_on='GEOID', right_on='County GEOID') #add new column back to main dataframe
     df_county['REL_SURROUNDING_MED_RENT'] = ((df_county['B25058EST1'] / df_county['AVG_SURROUNDING_MED_RENT']) * 100) - 100 #Normalize the rent of each county wth the average surrounding. Higher = overpriced compare to surroundings
-    
+
     #Average median rooms per unit of surrounding counties, and average/relative surrounding rent per room
     avg_neighbor_med_rooms = df_adj2.groupby('County GEOID')['B25021EST3'].agg('mean').rename('AVG_SURROUNDING_MED_ROOMS') #average the neighbor median rooms per unit on county geoid
     df_county = pd.merge(df_county, avg_neighbor_med_rooms, left_on='GEOID', right_on='County GEOID') #add new column back to main dataframe
@@ -133,9 +298,17 @@ def main():
     data = requests.get("https://raw.githubusercontent.com/UMBC-CMSC636-Team6/UMBC-CMSC636-Team6/refs/heads/main/county_adjacency2024.txt")
     df_adj = pd.read_csv(StringIO(data.text), sep='|', dtype={'County GEOID': str, 'Neighbor GEOID': str})
     with requests.get("https://raw.githubusercontent.com/UMBC-CMSC636-Team6/UMBC-CMSC636-Team6/refs/heads/main/geojson-counties-fips.json") as response:
-        counties = json.load(StringIO(response.text))
+        gpd_counties = geopandas.read_file(StringIO(response.text))
     with requests.get("https://raw.githubusercontent.com/UMBC-CMSC636-Team6/UMBC-CMSC636-Team6/refs/heads/main/us-states.json") as response:
-        states = json.load(StringIO(response.text))
+        gpd_states = geopandas.read_file(StringIO(response.text))
+
+    #Use geopandas library to simplify the geometry to reduce compile time
+    gpd_c = gpd_counties.copy()
+    tol = 1000 #tolerance of simplification, reduce to reduce detail, increase to increase detail. https://geopandas.org/en/stable/docs/reference/api/geopandas.GeoSeries.simplify.html
+    gpd_c["geometry"] = (gpd_c.to_crs(gpd_c.estimate_utm_crs()).simplify(tol).to_crs(gpd_c.crs)) 
+    counties = gpd_c.to_geo_dict(drop_id=True)
+    for i in counties['features']:
+        i['id'] = i['properties']['id']
 
     # df_county_full = pd.read_csv("./ACS_5YR_Housing_Estimate_Data_by_County_2352642343660635057.csv")
     # df_keys = pd.read_csv("./DD_ACS_5-Year_Housing_Estimate_Data_by_County.csv")
