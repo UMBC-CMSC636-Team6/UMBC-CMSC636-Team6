@@ -4,7 +4,7 @@ import os
 import pandas as pd
 import numpy as np
 from pandas.api.types import is_string_dtype, is_numeric_dtype
-from dash import Dash, dcc, html, Input, Output, callback
+from dash import Dash, dcc, html, Input, Output, callback, State
 import requests
 from io import StringIO
 import plotly.express as px
@@ -13,7 +13,7 @@ import geopandas
 
 #colors
 background_color = "rgba(0, 0, 0, 0)"
-text_color = 'rgba(255, 255, 255, 0)'
+text_color = 'rgba(255, 255, 255, 1)'
 
 data_point_mapping = {'B25058EST1': 'Median Rent($)', 
                       'RENT_PER_ROOM': 'Median Rent Per Room($)', 
@@ -29,14 +29,19 @@ data_point_list = [data_point_mapping[key] for key in data_point_mapping]
 #mainly to prove that we can use functions to make combining front and back end easier
 def get_first_map(dataframe, geojson, data_col):
     # Map from Alpha release for testing purposes
-    dataframe.rename(columns=data_point_mapping)
-    data_col_renamed = data_point_mapping[data_col]
+    column_names = data_point_mapping.copy()
+    column_names['STUSAB'] = 'State'
+    column_names['STATE'] = 'State Name'
+    column_names['NAME'] = 'County'
+
+    dataframe = dataframe.rename(columns=column_names)
+    data_col_renamed = column_names[data_col]
     fig = px.choropleth(dataframe, geojson=geojson, locations='GEOID', color=data_col_renamed,
                         color_continuous_scale="BuPu",
                         range_color=(0, dataframe[data_col_renamed].max()),
                         scope="usa",
                         labels={data_col_renamed: data_col_renamed},
-                        hover_data={data_point_mapping["STUSAB"]: True, data_point_mapping["NAME"]: True, data_col_renamed: True, "GEOID": False}
+                        hover_data={column_names["STUSAB"]: True, column_names["NAME"]: True, data_col_renamed: True, "GEOID": False}
                         )
 
     fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0}, plot_bgcolor=background_color,
@@ -273,17 +278,34 @@ def filter_states(df_county, df_state, counties, states, filter_list):
 # Stored data in all_data is [df_county, df_state, counties, states]
 @callback(
     Output("map_fig", "figure"),
-    Input("all_data", "data"),
-    Input("state_dropdown", "value")
+    Input('ref_button', 'n_clicks'),
+    State("all_data", "data"),
+    State("state_dropdown", "value"),
+    State("data_point_dropdown", "value")
 )
-def update_all_data(data, state_selections):
+def update_all_data(n_clicks, data, state_selections, data_point_selection):
+
+    #print(n_clicks)
+
+    data_point = data_point_selection
+
+    if isinstance(data_point_selection, list):
+        data_point = data_point_selection[0]
+
+    for k, v in data_point_mapping.items():
+        if v == data_point:
+            data_point = k
+            break
+
+    print(data_point)
+
     # Unmarshalls json data to dataframe format
     df_county = pd.read_json(StringIO(data["df_county"]), orient="split")
     df_state = pd.read_json(StringIO(data["df_state"]), orient="split")
 
     # filters by state and updates the map
     filtered_geojson, filtered_df = filter_states(df_county, df_state, data["counties"], data["states"], state_selections)
-    fig = get_first_map(filtered_df, filtered_geojson, 'B25058EST1')
+    fig = get_first_map(filtered_df, filtered_geojson, data_point)
 
     return fig
 
@@ -293,8 +315,8 @@ def main():
     df_county_full = pd.read_csv(StringIO(data.text), dtype={'GEOID': str, 'STATE': str, 'COUNTY': str})
     data = requests.get("https://raw.githubusercontent.com/UMBC-CMSC636-Team6/UMBC-CMSC636-Team6/refs/heads/main/ACS_5YR_Housing_Estimate_Data_by_State_-5633158829445399210.csv")
     df_state_full = pd.read_csv(StringIO(data.text), dtype={'GEOID': str})
-    data = requests.get("https://raw.githubusercontent.com/UMBC-CMSC636-Team6/UMBC-CMSC636-Team6/refs/heads/main/DD_ACS_5-Year_Housing_Estimate_Data_by_County.csv")
-    df_keys = pd.read_csv(StringIO(data.text))
+    # data = requests.get("https://raw.githubusercontent.com/UMBC-CMSC636-Team6/UMBC-CMSC636-Team6/refs/heads/main/DD_ACS_5-Year_Housing_Estimate_Data_by_County.csv")
+    # df_keys = pd.read_csv(StringIO(data.text))
     data = requests.get("https://raw.githubusercontent.com/UMBC-CMSC636-Team6/UMBC-CMSC636-Team6/refs/heads/main/county_adjacency2024.txt")
     df_adj = pd.read_csv(StringIO(data.text), sep='|', dtype={'County GEOID': str, 'Neighbor GEOID': str})
     with requests.get("https://raw.githubusercontent.com/UMBC-CMSC636-Team6/UMBC-CMSC636-Team6/refs/heads/main/geojson-counties-fips.json") as response:
@@ -329,28 +351,15 @@ def main():
         "df_county": df_county.to_json(orient="split"),
         "df_state": df_state.to_json(orient="split"),
         "counties": counties,
-        "states": states
+        "states": states,
     }
-    
-    #TODO: Should we rename the column names for viewing purposes
-    # rename_list = ['B25002EST1', 'B25002EST2', 'B25058EST1', 'B25032EST13', 'B25021EST3']
-    # renamed_cols = dict((i, df_keys[df_keys['Column Name'] == i]['Column Description'].tolist()[0]) for i in rename_list)
-    # dataframe = dataframe.rename(columns=renamed_cols)
-    # hover_data={"STATE_NAME": True, "NAME": True, "GEOID": False}
-    # for key in renamed_cols:
-    #     hover_data[renamed_cols[key]] = True
 
     state_list = df_county["STATE_NAME"].tolist()
     state_list = list(set(state_list))
     state_list = sorted(state_list)
     
-    
-
     # Get initial map figure to load in so the page doesnt load in a random graph for a split second
     fig = get_first_map(df_county, counties, 'B25058EST1')
-
-    # filtered_geojson, filtered_df = filter_states(df_county, df_state, counties, states, ["Maryland", "Maine", "Michigan"])
-    # fig = get_first_map(filtered_df, filtered_geojson, 'B25058EST1')
 
     #To update background color please check the assets/style.css file
     app = Dash(__name__)
@@ -358,76 +367,164 @@ def main():
     # The Dashboard
     app.layout = html.Div(
         html.Div(
-            className="page-background",
+            className="page-container",
             children=[
                 html.Div(
-                    className="page-container",
+                    className="navbar-container p3",
                     children=[
                         html.Div(
-                            className="items-row",
+                            className="navbar-name emphasis-text text-align-left",
+                            children="Team 6"
+                        ),
+
+                        # html.Div(
+                        #     className="items-row",
+                        #     children=[
+                        #         html.Div(
+                        #             className="navbar-button",
+                        #             children="About"
+                        #         ),
+                        #         html.Div(
+                        #             className="navbar-button",
+                        #             children="Vis"
+                        #         )
+                        #     ]
+                        # ),
+                    ]
+                ),
+
+                html.Div(
+                    className="screen-frame background-1 p1",
+                    children=[
+
+                        html.Div(className="new-layer image-landing"),
+                        html.Div(className="new-layer image-gradient-frame"),
+
+                        html.Div(
+                            className="new-layer p2",
+                            children=[
+                                html.Div(className="spacer"),
+                                html.Div(className="spacer"),
+                                html.Div(className="spacer"),
+                                html.Div(
+                                    className="row-container justify-content-flex-end",
+                                    children=[
+                                        html.Div(
+                                            className="about-container",
+                                            children=[
+                                                html.Div(
+                                                    className="text-box big-text text-align-left",
+                                                    children=(
+                                                        "About"
+                                                    )
+                                                ),
+                                                html.Div(className="h-line-text"),
+                                                html.Div(
+                                                    className="text-box text-align-left",
+                                                    children=(
+                                                        "Our goals as Team 6 was to discover the trends and similarities in the provided housing data. We aim to show search, lookup and/or browsing features while being able to compare and identify trends within our data."
+                                                    )
+                                                ),
+                                            ]
+                                        )
+                                    ]
+                                ),
+                                html.Div(className="spacer"),
+                                
+                                html.Div(
+                                    className="emphasis-text super-big-text",
+                                    children="Rent Prices Across The United States"
+                                ),
+
+                                html.Div(
+                                    className="body-text",
+                                    children="Allison Lee, Chris DeVoe, Gregory Marinakis, Jon Woods, +1 more."
+                                )
+                            ]
+                        )
+                    ]
+                ),
+
+                html.Div(
+                    className="auto-frame page-container background-2",
+                    children=[
+                        html.Div(className="h-line-spacer"),
+                        html.Div(
+                            className="row-container",
                             children=[
                                 html.Div(
-                                    className="text-box super-big-text half-width text-box-align-left",
-                                    children="Rent Analytics"
+                                    className="guide-container",
+                                    children=[
+                                        html.Div(
+                                            className="text-box big-text text-align-left",
+                                            children=(
+                                                "How To Use"
+                                            )
+                                        ),
+                                        html.Div(className="h-line-text"),
+                                        html.Div(
+                                            className="text-box text-align-left",
+                                            children=(
+                                                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam vel sem ac sem vestibulum ullamcorper eu iaculis arcu. Ut metus diam, tincidunt a congue sed, elementum sed diam. Fusce ligula libero, interdum sit amet urna in, rhoncus sagittis augue. Maecenas et justo at eros ornare porttitor."
+                                            )
+                                        ),
+                                    ]
                                 ),
                                 html.Div(
+                                    className="controls-container",
                                     children=[
+                                        html.Button(
+                                            id = 'ref_button',
+                                            n_clicks = 0,
+                                            className="button-style1 half-width",
+                                            children=(
+                                                "Refresh Map."
+                                            )
+                                        ),
+                                        
+                                        # Add dropdown to page
                                         html.Div(
-                                            className="text-align-left",
-                                            children="Team 6 Developers:"
+                                            className="text-box",
+                                            children=[
+                                                html.Div(
+                                                    children=[
+                                                        html.P("Select a state:"),
+                                                        dcc.Dropdown(
+                                                            className="black-text",
+                                                            id="state_dropdown",
+                                                            options=state_list,
+                                                            value=["Maryland"],
+                                                            placeholder="Select a state",
+                                                            multi=True
+                                                        )
+                                                    ]
+                                                )
+                                            ]
                                         ),
                                         html.Div(
-                                            className="text-align-left",
-                                            children="Allison Lee, Chris DeVoe, Gregory Marinakis, Jon Woods, +1 more."
+                                            className="text-box",
+                                            children=[
+                                                html.Div(
+                                                    children=[
+                                                        html.P("Select a data point:"),
+                                                        dcc.Dropdown(
+                                                            className="black-text",
+                                                            id="data_point_dropdown",
+                                                            options=data_point_list,
+                                                            value=[data_point_list[0]],
+                                                            placeholder="Select a data point",
+                                                            multi=False
+                                                        )
+                                                    ]
+                                                )
+                                            ]
                                         )
                                     ]
                                 )
                             ]
                         ),
-                        html.Div(className="spacer"),
-                        html.Div(
-                            className="text-box-2 half-width text-align-left",
-                            children=(
-                                "Our goals as Team 6 was to discover the trends and similarities in the provided housing data. We aim to show search, lookup and/or browsing features while being able to compare and identify trends within our data."
-                            )
-                        ),
-                        # Add dropdown to page
-                        html.Div(
-                            className="text-box-1 half-width",
-                            children=[
-                                html.Div(
-                                    children=[
-                                        html.P("Select a state:"),
-                                        dcc.Dropdown(
-                                            className="black-text",
-                                            id="state_dropdown",
-                                            options=state_list,
-                                            value=["Maryland"],
-                                            placeholder="Select a state",
-                                            multi=True
-                                        )
-                                    ]
-                                )
-                            ]
-                        ),
-                        html.Div(
-                            className="text-box-1 half-width",
-                            children=[
-                                html.Div(
-                                    children=[
-                                        html.P("Select a data point:"),
-                                        dcc.Dropdown(
-                                            className="black-text",
-                                            id="state_dropdown",
-                                            options=data_point_list,
-                                            value=[data_point_list[0]],
-                                            placeholder="Select a data point",
-                                            multi=False
-                                        )
-                                    ]
-                                )
-                            ]
-                        ),
+                            
+
                         # Store data between callbacks
                         dcc.Store(
                             id="all_data",
@@ -441,9 +538,22 @@ def main():
                         ),
                         html.P(
                             children=(
-                                "Figure 1: The map above shows the medium rent(B25058EST1) of the states and counties within the United States."
+                                "Figure 1: The map above shows the selected data point of the states and counties within the United States."
                             )
-                        )
+                        ),
+                        html.Div(className="h-line-spacer")
+                    ]
+                ),
+
+                html.Div(
+                    className="auto-frame background-1",
+                    children=[
+                        html.Div(
+                            className="text-box",
+                            children=(
+                                "Contact: WIP"
+                            )
+                        ),
                     ]
                 )
             ]
