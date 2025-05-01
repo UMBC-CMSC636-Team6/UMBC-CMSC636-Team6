@@ -70,8 +70,6 @@ def get_colors(xx,yy):
         colors.append('#%02x%02x%02x' % tuple(pick_color))
     return colors
 
-
-
 def set_color_col(dataframe, data_col1, data_col2, segments):
     maximum = dataframe[data_col1].max()
     minimum = dataframe[data_col1].min()
@@ -92,9 +90,10 @@ def set_color_col(dataframe, data_col1, data_col2, segments):
 #inputs:
 # dataframe: dataframe containing processed data from county
 # geojson: list containing geometry data for counties
-# data_col1: 
+# data_col1: Data point representing the x axis on the bivariate legend
+# data_col2: Data point representing the y axis on the bivariate legend
 #outputs:
-# fig
+# fig: Choropleth map object
 def get_bivariate_map(dataframe, geojson, data_col1, data_col2):
     segments = 4 #number of colors per axis. Increasing this significantlly increases map generation time
     #By default, using Jupyter runtime measurements, takes 20-25 seconds for 4 segments (twice that for non simplified map)
@@ -161,7 +160,7 @@ def get_bivariate_map(dataframe, geojson, data_col1, data_col2):
             type='rect',
             fillcolor=legend_colors[i],
             line=dict(
-                color='#000000',
+                color='background_color',
                 width=0.05,
             ),
             xref='paper',
@@ -183,9 +182,9 @@ def get_bivariate_map(dataframe, geojson, data_col1, data_col2):
         x=coord[(segments**2)-1]['x1'],
         y=coord[(segments**2)-1]['y1'],
         showarrow=False,
-        text='Column 2 🠒',
+        text=data_col1_renamed + ' 🠒',
         font=dict(
-            color='#333',
+            color=text_color,
             size=9,
         ),
         borderpad=0,
@@ -200,9 +199,9 @@ def get_bivariate_map(dataframe, geojson, data_col1, data_col2):
         x=coord[(segments**2)-1]['x1'],
         y=coord[(segments**2)-1]['y1'],
         showarrow=False,
-        text='Columm 1 🠒',
+        text=data_col2_renamed + ' 🠒',
         font=dict(
-            color='#333',
+            color=text_color,
             size=9,
         ),
         textangle=270,
