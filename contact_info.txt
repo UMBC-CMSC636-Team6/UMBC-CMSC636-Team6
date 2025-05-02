@@ -1,4 +1,4 @@
-*** CMSC 426 Team 6: Roles & Contact Information ***
+*** CMSC 436 Team 6: Roles & Contact Information ***
 
 Chris Devoe - Data Deployment Specialist, Technical Co-Writer
 Email: cdevoe1@umbc.edu
@@ -16,6 +16,6 @@ Jon Woods - Resource Manager, Technical Co-Writer
 Email: jwoods6@umbc.edu
 Github link: https://github.com/jonw2468
 
-Brandon Xu - Front-End Design Specialist
-Email: bxu3@umbc.edu
-Github link: https://github.com/akusagisei (Please note that this account is private.)
+[REDACTED] - Front-End Design Specialist
+[REDACTED]
+Github link: [REDACTED]
