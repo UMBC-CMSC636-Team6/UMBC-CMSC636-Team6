@@ -366,7 +366,7 @@ Override Dash-Dependent Styles
 */
 
 .Select-value {
-    background-color: var(--accent-color) !important;
+    background-color: rgba(0, 0, 0, 0.125) !important;
 }
 
 .infolayer {
