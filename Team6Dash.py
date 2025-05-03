@@ -305,6 +305,20 @@ def update_all_data(n_clicks, data, state_selections, data_point_selection):
 
     return fig
 
+# Select all states in the dropdown if select_all box is selected, otherwise clear dropdown
+@callback(
+    Output("state_dropdown", "value"),
+    Input('select_all', 'value'),
+    State("all_states", "data"),
+)
+def select_all(select, all_states):
+    # Updates dropdown with all states
+    if select == ["selected"]:
+        return all_states
+    # Empty dropdown selection
+    else:
+        return []
+
 def main():
     #gets data
     data = requests.get("https://raw.githubusercontent.com/UMBC-CMSC636-Team6/UMBC-CMSC636-Team6/refs/heads/main/ACS_5YR_Housing_Estimate_Data_by_County_2352642343660635057.csv")
@@ -492,6 +506,11 @@ def main():
                                                             value=["Maryland"],
                                                             placeholder="Select a state",
                                                             multi=True
+                                                        ),
+                                                        # Select all box
+                                                        dcc.Checklist(
+                                                            id="select_all",
+                                                            options=[{"label": "Select All", "value": "selected"}]
                                                         )
                                                     ]
                                                 )
@@ -525,6 +544,11 @@ def main():
                         dcc.Store(
                             id="all_data",
                             data=callback_data
+                        ),
+                        # Store list of all states for select all box
+                        dcc.Store(
+                            id="all_states",
+                            data=state_list
                         ),
                         # The map runs here we can put multiple and keep using the HTML style code to keep adding more
                         dcc.Graph(
