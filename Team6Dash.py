@@ -475,7 +475,7 @@ def main():
                                         html.Div(
                                             className="text-box text-align-left",
                                             children=(
-                                                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam vel sem ac sem vestibulum ullamcorper eu iaculis arcu. Ut metus diam, tincidunt a congue sed, elementum sed diam. Fusce ligula libero, interdum sit amet urna in, rhoncus sagittis augue. Maecenas et justo at eros ornare porttitor."
+                                                '''Use the dropdown menu labeled "Select a state" to choose one or more states whose counties you would like to display, and use the dropdown labeled "Select a data point" to choose what housing or rent value you would like to see visualized. To display the data for all states and territories at once, check the "Select All" checkbox. Unchecking this box deselects all states and territories, so you can reset your map by simply checking and unchecking "Select All" if you want to start over in choosing states to view.'''
                                             )
                                         ),
                                     ]
@@ -528,7 +528,7 @@ def main():
                                                             options=data_point_list,
                                                             value=[data_point_list[0]],
                                                             placeholder="Select a data point",
-                                                            multi=True
+                                                            multi=False
                                                         )
                                                     ]
                                                 )
