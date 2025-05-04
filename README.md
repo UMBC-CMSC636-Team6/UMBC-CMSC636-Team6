@@ -13,13 +13,13 @@ First, open the file `Team6Dash.py` in a python environment. Make sure the envir
 - `io`
 - `geopandas`
 
-Next, clone this repository to download all of its files:
+Next, clone this repository in your Linux/Unix terminal to download all of its files:
 ```bash
 git clone -b live git@github.com:UMBC-CMSC636-Team6/UMBC-CMSC636-Team6
 ```
 The "live" branch is the current live verson of our repository.<br>
 <br>
-Once the repository is downloaded, enter the following:
+Once the repository is downloaded, run the Python code in your terminal:
 ```bash
 python3 Team6Dash.py
 ```
