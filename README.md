@@ -4,7 +4,7 @@ An interactive visualization system designed to help non-experts learn about the
 
 ## Running Locally
 
-First, open the file `Team6Dash.py` in a python environment. Make sure the environment has the following libraries installed, which are required to run the product:
+First, open the file `Team6Dash.py` in a Python environment. Make sure the environment has the following libraries installed, which are required to run the product:
 - `pandas`
 - `numpy`
 - `plotly`
@@ -19,18 +19,18 @@ git clone -b live git@github.com:UMBC-CMSC636-Team6/UMBC-CMSC636-Team6
 ```
 The "live" branch is the current live verson of our repository.<br>
 <br>
-Once the repository is downloaded, run the Python code in your terminal:
+Once the repository is downloaded, run the Python code. If you are using your terminal, enter this command:
 ```bash
 python3 Team6Dash.py
 ```
-Finally, wait until your terminal displays a link in the following format:
+Finally, wait until your terminal or console displays a URL in the following format:
 <pre>
 ...
  * Running on all addresses (0.0.0.0)
- * Running on http://xxx.x.x.x:xxx
+ * Running on http://xxx.x.x.x:xxxx
 ...
 </pre>
-Copy and paste that HTTP link into any browser, and you will be locally redirected to our Dash site.
+Copy and paste that link into any browser, and you will be locally redirected to our Dash site.
 
 ## Running Online
 
