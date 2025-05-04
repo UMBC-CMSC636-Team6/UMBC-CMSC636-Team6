@@ -429,7 +429,7 @@ def main():
                                                 html.Div(
                                                     className="text-box text-align-left",
                                                     children=(
-                                                        "Our goals as Team 6 was to discover the trends and similarities in the provided housing data. We aim to show search, lookup and/or browsing features while being able to compare and identify trends within our data."
+                                                        "Our goal in this visualization is to discover the trends and similarities in the provided housing data. We aim to show search, lookup and/or browsing features while being able to compare and identify trends within our data."
                                                     )
                                                 ),
                                             ]
@@ -472,7 +472,7 @@ def main():
                                         html.Div(
                                             className="text-box text-align-left",
                                             children=(
-                                                '''Use the dropdown menu labeled "Select a state" to choose one or more states whose counties you would like to display, and use the dropdown labeled "Select a data point" to choose what housing or rent value you would like to see visualized. To display the data for all states and territories at once, check the "Select All" checkbox. Unchecking this box deselects all states and territories, so you can reset your map by simply checking and unchecking "Select All" if you want to start over in choosing states to view.'''
+                                                '''Use the dropdown menu labeled "Select a state" to choose one or more states whose counties you would like to display, and use the dropdown labeled "Select a data point" to choose what housing or rent value(s) you would like to see visualized. To display the data for all states and territories at once, check the "Select All" checkbox. Unchecking this box deselects all states and territories, so you can reset your map by simply checking and unchecking "Select All" if you want to start over in choosing states to view.'''
                                             )
                                         ),
                                     ]
@@ -525,7 +525,7 @@ def main():
                                                             options=data_point_list,
                                                             value=[data_point_list[0]],
                                                             placeholder="Select a data point",
-                                                            multi=False
+                                                            multi=True
                                                         )
                                                     ]
                                                 )
