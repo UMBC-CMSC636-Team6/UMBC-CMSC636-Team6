@@ -34,7 +34,7 @@ Due to some technical difficulties with using the free version of Render, the we
 
 <pre>
 GroupN_FinalRelease.zip
-|---- assets/<br>
+|---- assets/
 |     |---- city.webp
 |     |---- style.css
 |
