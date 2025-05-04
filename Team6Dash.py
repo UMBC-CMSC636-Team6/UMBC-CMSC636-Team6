@@ -528,7 +528,7 @@ def main():
                                                             options=data_point_list,
                                                             value=[data_point_list[0]],
                                                             placeholder="Select a data point",
-                                                            multi=False
+                                                            multi=True
                                                         )
                                                     ]
                                                 )
