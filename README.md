@@ -34,7 +34,8 @@ Due to some technical difficulties with using the free version of Render, the we
 
 GroupN_FinalRelease.zip<br>
 |---- assets/<br>
-|     |---- city.webp<br>
+<pre> ```text | |---- city.webp ``` </pre>
+<br>
 |     |---- style.css<br>
 |<br>
 |---- ACS_5YR_Housing_Estimate_Data_by_County_2352642343660635057.csv<br>
