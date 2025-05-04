@@ -61,12 +61,14 @@ Group6_FinalRelease.zip
 |
 |---- Alpha.ipynb
 |---- Phase1_ExtraCredit.ipynb
+|---- transformation_artifacts.ipynb
+|
 |---- county_adjacency2024.txt
+|---- geojson-counties-fips.json
+|---- us-states.json
+|
 |---- README.md
 |---- contact_info.txt
-|---- geojson-counties-fips.json
-|---- transformation_artifacts.ipynb
-|---- us-states.json
 </pre>
 
 ## Contact
