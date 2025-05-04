@@ -30,16 +30,20 @@ Finally, wait until your terminal or console displays a URL in the following for
  * Running on http://xxx.x.x.x:xxxx
 ...
 </pre>
-Copy and paste that link into any browser, and you will be locally redirected to our Dash site.
+Copy and paste that link into any browser, and you will be locally redirected to our Dash site.<br>
+<br>
+Once you're done using it, exit the site by closing its tab on your browser, returning to your terminal, and entering Ctrl+C on your keyboard.
 
 ## Running Online
 
-To access the visualization via internet, visit https://umbc-cmsc636-team6-7pm7.onrender.com<br>
+To access the visualization via internet, simply visit: https://umbc-cmsc636-team6-7pm7.onrender.com<br>
+<br>
 (Note: Due to some technical difficulties with using the free version of Render, the website may take an unusually long time to load or return a `502 Bad Gateway` error. If you repeatedly experience either issue with this link, refer to the previous section and try opening the site locally.)
 
 ## How to Use
 
-(placeholder)
+Once you have access to the site, you should now be able to scroll down to, access, and hover over a choropleth map of the median rent. By default, it should display only the state of Maryland and no settings configured in either dropdown menu, as shown below.
+![Default Map Screenshot](screenshots/Screenshot_1.png)
 
 ## Directory Structure
 
@@ -71,5 +75,5 @@ Group6_FinalRelease.zip
 |---- contact_info.txt
 </pre>
 
-## Contact
+## Contact Us
 If you have any questions, please refer to the file `contact_info.txt`, which contains the name, email address, and GitHub URL of each contributor to this project.

@@ -432,7 +432,7 @@ def main():
                                                 html.Div(
                                                     className="text-box text-align-left",
                                                     children=(
-                                                        "Our goals as Team 6 was to discover the trends and similarities in the provided housing data. We aim to show search, lookup and/or browsing features while being able to compare and identify trends within our data."
+                                                        "Our goal in this visualization is to discover the trends and similarities in the provided housing data. We aim to show search, lookup and/or browsing features while being able to compare and identify trends within our data."
                                                     )
                                                 ),
                                             ]
