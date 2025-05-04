@@ -67,7 +67,6 @@ Group6_FinalRelease.zip
 |     |---- Screenshot_1.png
 |     |---- Screenshot_2.png
 |     |---- Screenshot_3.png
-|     |---- Screenshot_CT_bug.png
 |
 |---- ACS_5YR_Housing_Estimate_Data_by_County_2352642343660635057.csv
 |---- ACS_5YR_Housing_Estimate_Data_by_State_-5633158829445399210.csv
@@ -85,11 +84,6 @@ Group6_FinalRelease.zip
 |---- README.md
 |---- contact_info.txt
 </pre>
-
-## Known Bugs
-
-For unknown reasons, there is a bug in our repository that causes the state of Connecticut to not appear in the "Select a State" dropdown menu, meaning our data for its counties *cannot* be visualized by any means. We were unable to find a fix for this error due to time constraints.
-![CT does not appear on "Select All" maps](screenshots/Screenshot_CT_bug.png)
 
 ## Contact Us
 
