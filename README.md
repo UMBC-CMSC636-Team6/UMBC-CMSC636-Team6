@@ -32,24 +32,25 @@ Due to some technical difficulties with using the free version of Render, the we
 
 ## Directory Structure
 
-GroupN_FinalRelease.zip<br>
+<pre>
+GroupN_FinalRelease.zip
 |---- assets/<br>
-<pre> ```text | |---- city.webp ``` </pre>
-<br>
-|     |---- style.css<br>
-|<br>
-|---- ACS_5YR_Housing_Estimate_Data_by_County_2352642343660635057.csv<br>
-|---- ACS_5YR_Housing_Estimate_Data_by_State_-5633158829445399210.csv<br>
-|---- Alpha.ipynb<br>
-|---- DD_ACS_5-Year_Housing_Estimate_Data_by_County.csv<br>
-|---- Phase1_ExtraCredit.ipynb<br>
-|---- README.md<br>
-|---- Team6Dash.py<br>
-|---- contact_info.txt<br>
-|---- county_adjacency2024.txt<br>
-|---- geojson-counties-fips.json<br>
-|---- transformation_artifacts.ipynb<br>
+|     |---- city.webp
+|     |---- style.css
+|
+|---- ACS_5YR_Housing_Estimate_Data_by_County_2352642343660635057.csv
+|---- ACS_5YR_Housing_Estimate_Data_by_State_-5633158829445399210.csv
+|---- Alpha.ipynb
+|---- DD_ACS_5-Year_Housing_Estimate_Data_by_County.csv
+|---- Phase1_ExtraCredit.ipynb
+|---- README.md
+|---- Team6Dash.py
+|---- contact_info.txt
+|---- county_adjacency2024.txt
+|---- geojson-counties-fips.json
+|---- transformation_artifacts.ipynb
 |---- us-states.json
+</pre>
 
 ## Contact
 If you have any questions, please refer to the file `contact_info.txt`, which contains the name, email address, and GitHub URL of each contributor to this project.
