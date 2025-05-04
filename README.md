@@ -1,6 +1,6 @@
 # Rent Prices Across The United States
 
-An interactive visualization system designed to help non-experts learn about the differences in housing and rent pricing trends across the various counties of the United States.
+An interactive visualization system designed to help non-experts learn about the differences in housing and rent pricing across the various counties of the United States.
 
 ## Running Locally
 
@@ -13,40 +13,57 @@ First, open the file `Team6Dash.py` in a python environment. Make sure the envir
 - `io`
 - `geopandas`
 
-Next, clone this repository to download:
-
+Next, clone this repository to download all of its files:
 ```bash
 git clone -b live git@github.com:UMBC-CMSC636-Team6/UMBC-CMSC636-Team6
 ```
-
-The "live" branch is the current live verson of our repository.
+The "live" branch is the current live verson of our repository.<br>
+<br>
+Once the repository is downloaded, enter the following:
+```bash
+python3 Team6Dash.py
+```
+Finally, wait until your terminal displays a link in the following format:
+<pre>
+...
+ * Running on all addresses (0.0.0.0)
+ * Running on http://xxx.x.x.x:xxx
+...
+</pre>
+Copy and paste that HTTP link into any browser, and you will be locally redirected to our Dash site.
 
 ## Running Online
 
-To directly access the visualization via internet, visit https://umbc-cmsc636-team6-7pm7.onrender.com<br>
-Due to some technical difficulties with using the free version of Render, the website may take an unusually long time to load or return a `502 Bad Gateway` error. If you repeatedly experience either issue with this link, refer to the previous section and try opening the site locally.
+To access the visualization via internet, visit https://umbc-cmsc636-team6-7pm7.onrender.com<br>
+(Note: Due to some technical difficulties with using the free version of Render, the website may take an unusually long time to load or return a `502 Bad Gateway` error. If you repeatedly experience either issue with this link, refer to the previous section and try opening the site locally.)
 
 ## How to Use
 
-
+(placeholder)
 
 ## Directory Structure
 
 <pre>
-GroupN_FinalRelease.zip
+Group6_FinalRelease.zip
 |---- assets/
 |     |---- city.webp
 |     |---- style.css
 |
+|---- screenshots/
+|     |---- Screenshot_1.png
+|     |---- Screenshot_2.png
+|     |---- Screenshot_3.png
+|
 |---- ACS_5YR_Housing_Estimate_Data_by_County_2352642343660635057.csv
 |---- ACS_5YR_Housing_Estimate_Data_by_State_-5633158829445399210.csv
-|---- Alpha.ipynb
 |---- DD_ACS_5-Year_Housing_Estimate_Data_by_County.csv
-|---- Phase1_ExtraCredit.ipynb
-|---- README.md
 |---- Team6Dash.py
-|---- contact_info.txt
+|
+|---- Alpha.ipynb
+|---- Phase1_ExtraCredit.ipynb
 |---- county_adjacency2024.txt
+|---- README.md
+|---- contact_info.txt
 |---- geojson-counties-fips.json
 |---- transformation_artifacts.ipynb
 |---- us-states.json
