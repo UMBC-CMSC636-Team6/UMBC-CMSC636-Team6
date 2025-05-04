@@ -85,5 +85,10 @@ Group6_FinalRelease.zip
 |---- contact_info.txt
 </pre>
 
+## Known Bugs
+
+For unknown reasons, there is a bug in our repository that causes the state of Connecticut to not appear in the "Select a State" dropdown menu, meaning our data for its counties *cannot* be visualized by any means. We were unable to find a fix for this error due to time constraints.
+
 ## Contact Us
+
 If you have any questions, please refer to the file `contact_info.txt`, which contains the name, email address, and GitHub URL of each contributor to this project.
