@@ -10,6 +10,8 @@ First, open the file `Team6Dash.py` in a python environment. Make sure the envir
 - `plotly`
 - `dash`
 - `requests`
+- `io`
+- `geopandas`
 
 Next, clone this repository to download:
 
@@ -21,8 +23,8 @@ The "live" branch is the current live verson of our repository.
 
 ## Running Online
 
-To directly access the visualization via internet, visit https://umbc-cmsc636-team6-7pm7.onrender.com
-This may take several seconds to reload
+To directly access the visualization via internet, visit https://umbc-cmsc636-team6-7pm7.onrender.com<br>
+Due to some technical difficulties with using the free version of Render, the website may take an unusually long time to load or return a `502 Bad Gateway` error. If you repeatedly experience either issue with this link, refer to the previous section and try opening the site locally.
 
 ## How to Use
 
