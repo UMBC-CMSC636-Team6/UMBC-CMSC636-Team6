@@ -12,10 +12,10 @@ Gregory Marinakis - Data Preprocessing Specialist
 Email: gmarina1@umbc.edu
 Github link: https://github.com/gmarina1
 
-Jon Woods - Resource Manager, Technical Co-Writer
+Jon Woods - Project and Resource Manager, Technical Co-Writer
 Email: jwoods6@umbc.edu
 Github link: https://github.com/jonw2468
 
-[REDACTED] - Front-End Design Specialist
-[REDACTED]
-Github link: [REDACTED]
+Brandon Xu - Front-End Design Specialist
+Email: [redacted]
+Github link: [redacted]
