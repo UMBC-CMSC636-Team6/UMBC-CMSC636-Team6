@@ -54,27 +54,36 @@ Once the choropleth map has been refreshed with your preferences, you can then t
 
 <pre>
 Group6_FinalRelease.zip
-|---- assets/
-|     |---- city.webp
-|     |---- style.css
+|---- data/
+|     |---- ACS_5YR_Housing_Estimate_Data_by_County_2352642343660635057.csv
+|     |---- ACS_5YR_Housing_Estimate_Data_by_State_-5633158829445399210.csv
+|     |---- ACS_5-Year_Housing_Estimate_Data_by_County.csv
+|     |---- DD_ACS_5-Year_Housing_Estimate_Data_by_County.csv
+|     |---- geojson-counties-fips.json
+|     |---- us-states.json
+|     |---- county_adjacency2024.txt
+|
+|---- flask_server
+|     |---- assets/
+|     |     |---- city.webp
+|     |     |---- style.css
+|
+|     |---- ACS_5YR_Housing_Estimate_Data_by_County_2352642343660635057.csv
+|     |---- ACS_5YR_Housing_Estimate_Data_by_State_-5633158829445399210.csv
+|     |---- ACS_5-Year_Housing_Estimate_Data_by_County.csv
+|     |---- DD_ACS_5-Year_Housing_Estimate_Data_by_County.csv
+|     |---- geojson-counties-fips.json
+|     |---- us-states.json
+|     |---- county_adjacency2024.txt
+|     |---- requirements.txt
+|     |---- runtime.txt
+|     |---- Procfile
+|     |---- Team6Dash.py
 |
 |---- screenshots/
 |     |---- Screenshot_1.png
 |     |---- Screenshot_2.png
 |     |---- Screenshot_3.png
-|
-|---- ACS_5YR_Housing_Estimate_Data_by_County_2352642343660635057.csv
-|---- ACS_5YR_Housing_Estimate_Data_by_State_-5633158829445399210.csv
-|---- DD_ACS_5-Year_Housing_Estimate_Data_by_County.csv
-|---- Team6Dash.py
-|
-|---- Alpha.ipynb
-|---- Phase1_ExtraCredit.ipynb
-|---- transformation_artifacts.ipynb
-|
-|---- county_adjacency2024.txt
-|---- geojson-counties-fips.json
-|---- us-states.json
 |
 |---- README.md
 |---- contact_info.txt
